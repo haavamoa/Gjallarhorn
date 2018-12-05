@@ -1,0 +1,35 @@
+<template>
+    <div class="row justify-content-md-center" >  
+      <div repeat.for="package of packages" class="col-2 shadow alert border ${package.isLatest ? 'alert-success border-success' : 'alert-danger border-danger'}" style="margin-left: 4px;" role="alert">
+          <div class="alert-heading">
+              <div class="row container-fluid">
+                    <h4>${package.name}</h4>
+                    <div if.bind="package.isFetching" class="loader ml-2" style="height:2px; width: 2px"></div>
+              </div>
+          </div>
+          <hr />
+          <div class="card active bg-transparent shadow container-fluid" if.bind="!package.isFetching">
+              <div class="row container">
+                  <div class="card-body">
+                      <a class="clearfix" style="color: black">
+                          <div class="card-title text-muted mb-1">${package.sourceAUrl}</div>
+                          <h5 class="card-subtitle">${package.sourceAVersion}</h5>
+                      </a>
+                  </div>
+  
+                  <div class="card-body">
+                      <a class="clearfix" style="color: black" >
+                          <div class="card-title text-muted mb-1">${package.sourceBUrl}</div>
+                          <h5 class="card-subtitle">${package.sourceBVersion}</h5>
+                      </a>
+                  </div>
+              </div>
+              <!-- <div if.bind="package.fetchDate != null" class="card-footer">
+                  <div class="row text-muted mb-1">Last checked</div>
+                  <div class="font-weight-bold row">${('00' + (package.fetchDate.getHours())).slice(-2)}:${('00' + (package.fetchDate.getMinutes())).slice(-2)}:${('00' + (package.fetchDate.getSeconds())).slice(-2)}</div>
+                  <div class="font-italic row">${('00' + package.fetchDate.getDate()).slice(-2)}-${('00' + (package.fetchDate.getMonth() + 1)).slice(-2)}-${package.fetchDate.getFullYear()}</div>
+              </div> -->
+          </div>
+      </div>
+      </div>
+  </template>

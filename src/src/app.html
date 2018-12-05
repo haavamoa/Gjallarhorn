@@ -1,0 +1,26 @@
+﻿<template>
+  <div class="container-fluid mb-3">
+    <!-- Header-->
+    <div class="media">
+      <div class="media-body">
+        <div class="row">
+          <div class="col header-text text-monospace text-primary"> Gjallarhorn</div>
+        </div>
+        <div class="btn-group btn-group-toggle ${isAnyPackagesComparing ? 'disabled' : ''}" data-toggle="buttons">
+          <label class="btn btn-primary ${normalViewIsVisible ? 'active' : ''}">
+            <input type="radio" name="options" id="option1" autocomplete="off" checked.bind="normalViewIsVisible"
+              click.delegate="goToNormalView()">Status
+          </label>
+          <label class="btn btn-primary ${jsonViewIsVisible ? 'active' : ''}">
+            <input type="radio" name="options" id="option2" autocomplete="off" checked.bind="jsonViewIsVisible"
+              click.delegate="goToJsonView()">Edit
+          </label>
+        </div>
+      </div>
+    </div>
+  </div>
+  <div class="container-fluid">
+    <compose view-model.bind="currentView"></compose>
+  </div>
+  </div>
+</template>

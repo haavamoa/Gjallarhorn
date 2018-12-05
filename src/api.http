@@ -1,0 +1,14 @@
+@host = localhost:16604
+
+### api
+POST http://@{{host}}/api
+
+### api/compare
+POST http://@{{host}}/api/comparepackage
+Content-Type: "application/json;"
+
+{
+    "name": "LightInject",
+    "CompareUrl": "https://api.nuget.org/v3/",
+    "Url": "http://dips-nuget/nuget/Arena-18.1-Nuget/"
+}
