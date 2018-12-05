@@ -10,5 +10,5 @@ Content-Type: "application/json;"
 {
     "name": "LightInject",
     "CompareUrl": "https://api.nuget.org/v3/",
-    "Url": "http://dips-nuget/nuget/Arena-18.1-Nuget/"
+    "Url": "https://api.nuget.org/v3/"
 }
