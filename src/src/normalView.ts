@@ -4,25 +4,42 @@ import { autoinject } from "aurelia-framework";
 
 @autoinject
 export class NormalView {
+
     packages!: Array<Package>;
     UserConfigurationService: UserConfigurationService;
     constructor(UserConfigurationService:UserConfigurationService) {
         this.UserConfigurationService = UserConfigurationService;
     }
-    public onPackagesChanged(packages: Package[]): void {
 
+    initialize(packages: Package[]): void {
+        this.packages = packages;
+    }
+
+    public onPackagesChanged(comparedPackage:Package): void {
         if (this.packages !== undefined) {
-            packages.forEach(p => {
-                this.searchAndReplace(p);
+            this.packages.forEach(p => {
+                this.searchAndReplace(comparedPackage);
             }
             );
-        } else {
-            this.packages = packages;
         }
     }
 
-    public onAllPackagesFinishedComparing():void {
-        this.packages = this.UserConfigurationService.sortPackagesOnLatest(this.packages);
+    public onAllPackagesFinishedComparing(packages : Package[]):void {
+        this.packages = packages;
+    }
+    cleanPackages(newPackages: Package[]): void {
+        this.packages.forEach(oldpackage => {
+            var oldPackagesIsGone:boolean = newPackages.some(newpackage => !this.Equals(newpackage, oldpackage));
+            if(oldPackagesIsGone) {
+                const index : number = this.packages.indexOf(oldpackage);
+                this.packages.splice(index);
+            }
+        });
+    }
+
+    public Equals(packageA:Package, packageB:Package): boolean {
+        return packageA.name === packageB.name &&
+        packageA.sourceAUrl === packageB.sourceAUrl && packageA.sourceBUrl === packageB.sourceBUrl;
     }
 
     private searchAndReplace(newPackage: Package): void {

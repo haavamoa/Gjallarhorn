@@ -60,8 +60,6 @@ export class JsonView {
             } catch (e) {
                 this.errorMessage = e;
             }
-        } else {
-            this.EventAggregator.publish("PackagesAreEmptyEvent");
         }
     }
 }

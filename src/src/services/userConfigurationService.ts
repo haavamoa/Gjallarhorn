@@ -22,8 +22,7 @@ export class UserConfigurationService {
     public comparePackage(sourceComparer: SourceComparer, p: Package): void {
         p.isFetching = true;
         this.searchReplaceAndSave(sourceComparer, p);
-        let updatedPackages: Package[] = this.getPackagesForComparer(sourceComparer);
-        this.EventAggregator.publish("PackageStartedComparingEvent", updatedPackages);
+        this.EventAggregator.publish("PackageStartedComparingEvent", p);
         this.HttpClient
             .createRequest("api/comparePackage")
             .asPost()
@@ -53,8 +52,11 @@ export class UserConfigurationService {
                 p.isLatest = p.sourceAVersion === p.sourceBVersion;
                 p.compareFailedString = "";
                 this.searchReplaceAndSave(sourceComparer, p);
-                let updatedPackages: Package[] = this.getPackagesForComparer(sourceComparer);
-                this.EventAggregator.publish("PackageComparedEvent", updatedPackages);
+                // let updatedPackages: Package[] = this.getPackagesForComparer(sourceComparer);
+                this.EventAggregator.publish("PackageComparedEvent", p);
+                if(this.IsAllPackagesCompleted()) {
+                    this.EventAggregator.publish("AllPackagesAreComparedEvent", this.getPackages());
+                }
             })
             .catch((reason: any) => {
                 if (reason !== undefined) {
@@ -69,6 +71,12 @@ export class UserConfigurationService {
                 }
             }
             );
+    }
+    IsAllPackagesCompleted(): boolean {
+        var isAllPackagesCompared: boolean = false;
+        var packages : Package[] = this.getPackages();
+        isAllPackagesCompared = packages.every(p => !p.isFetching);
+        return isAllPackagesCompared;
     }
 
     private searchReplaceAndSave(sourceComparer: SourceComparer, newPackage: Package): void {
@@ -110,9 +118,11 @@ export class UserConfigurationService {
     }
 
     public sortPackagesOnLatest(packagesToSort: Package[]): Package[] {
-        let isNotLatestPackages: Package[] = packagesToSort.filter(p => !p.isLatest);
-        var latestPackages: Package[] = packagesToSort.filter(p => p.isLatest);
-        return isNotLatestPackages.concat(latestPackages);
+         let isNotLatestPackages: Package[] = packagesToSort.filter(p => !p.isLatest);
+         isNotLatestPackages = isNotLatestPackages.sort((a,b) => a.name > b.name ? 1 : -1);
+         let isLatestPackages: Package[] = packagesToSort.filter(p => p.isLatest);
+         isLatestPackages = isLatestPackages.sort((a,b) => a.name > b.name ? 1 : -1);
+         return isNotLatestPackages.concat(isLatestPackages);
     }
 
     public save(userConfiguration: UserConfiguration): void {
@@ -144,6 +154,7 @@ export class UserConfigurationService {
                     sourceComparers = userConfiguration.SourceComparers;
                 }
             }
+        }
             let packages: Package[] = new Array<Package>();
             if (sourceComparers !== undefined) {
                 sourceComparers.forEach(comparer => {
@@ -152,10 +163,7 @@ export class UserConfigurationService {
                     });
                 });
             }
-            return this.sortPackagesOnLatest(packages);
-        } else {
-            return new Array<Package>();
-        }
+        return this.sortPackagesOnLatest(packages);
     }
 
     public getPackagesForComparer(sourceComparer: SourceComparer): Package[] {

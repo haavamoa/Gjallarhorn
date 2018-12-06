@@ -29,17 +29,13 @@ export class App {
 
         if (this.EventAggregator !== undefined) {
             this.packagesChangedSubscriber = this.EventAggregator.subscribe("PackageComparedEvent"
-                , (updatedPackages: Package[]) => {
-                    this.onPackageCompared(updatedPackages);
+                , (comparedPackage:Package) => {
+                    this.onPackageCompared(comparedPackage);
                 });
             this.packagesChangedSubscriber = this.EventAggregator.subscribe("PackageStartedComparingEvent"
-                , (updatedPackages: Package[]) => {
-                    this.onPackageStartedComparing(updatedPackages);
-                    this.isAnyPackagesComparing = updatedPackages.some(p => p.isFetching);
+                , (updatedPackage:Package) => {
+                    this.onPackageStartedComparing(updatedPackage);
                 });
-            this.packagesChangedSubscriber = this.EventAggregator.subscribe("PackagesAreEmptyEvent", () => {
-                this.onPackagesAreEmptyEvent();
-            });
             this.packagesChangedSubscriber = this.EventAggregator.subscribe("GoToNormalViewEvent", () => {
                 this.goToNormalView();
             });
@@ -47,36 +43,38 @@ export class App {
                 this.onPackagesToCompareChanged(comparers);
             });
 
+            this.packagesChangedSubscriber = this.EventAggregator.subscribe("AllPackagesAreComparedEvent", (updatedPackages: Package[]) => {
+                this.onAllPackagesAreCompared(updatedPackages);
+            });
         }
     }
 
 
-    private onPackageCompared(updatedPackages: Package[]): void {
-        this.isAnyPackagesComparing = updatedPackages.some(p => p.isFetching);
-        this.normalView.onPackagesChanged(updatedPackages);
-        if(!this.isAnyPackagesComparing) {
-            this.normalView.onAllPackagesFinishedComparing();
-        }
+    private onPackageCompared(comparedPackage:Package): void {
+        this.isAnyPackagesComparing = this.normalView.packages.some(p => p.isFetching);
+        this.normalView.onPackagesChanged(comparedPackage);
         this.goToNormalView();
     }
 
-    private onPackageStartedComparing(updatedPackages: Package[]): void {
-        this.normalView.onPackagesChanged(updatedPackages);
-        this.goToNormalView();
-    }
-
-    private onPackagesAreEmptyEvent(): void {
-        this.normalView.onPackagesChanged(new Array<Package>());
+    private onPackageStartedComparing(updatedPackage:Package): void {
+        this.normalView.onPackagesChanged(updatedPackage);
         this.goToNormalView();
     }
 
     private onPackagesToCompareChanged(comparers: SourceComparer[]): void {
+        var packages:Package[] = this.UserConfigurationService.getPackages(comparers);
+        this.normalView.initialize(packages);
         this.comparePackages(comparers);
+    }
+    onAllPackagesAreCompared(updatedPackages: Package[]): any {
+        this.isAnyPackagesComparing = false;
+        this.normalView.onAllPackagesFinishedComparing(updatedPackages);
     }
 
     activate(): void {
         let userConfiguration: UserConfiguration | null = this.UserConfigurationService.get();
         if (userConfiguration != null) {
+            this.normalView.initialize(this.UserConfigurationService.getPackages());
             this.comparePackages(userConfiguration.SourceComparers);
         }
         this.goToNormalView();
@@ -103,10 +101,10 @@ export class App {
     }
 
     comparePackages(comparers: SourceComparer[]): void {
-            comparers.forEach(comparer => {
-                comparer.Packages.forEach(p => {
-                    this.UserConfigurationService.comparePackage(comparer, p);
-                });
+        comparers.forEach(comparer => {
+            comparer.Packages.forEach(p => {
+                this.UserConfigurationService.comparePackage(comparer, p);
             });
+        });
     }
 }
