@@ -3,12 +3,32 @@
 ### api
 POST http://@{{host}}/api
 
-### api/compare
+### api/comparepackage
 POST http://@{{host}}/api/comparepackage
 Content-Type: "application/json;"
 
 {
     "name": "LightInject",
-    "CompareUrl": "https://api.nuget.org/v3/",
-    "Url": "https://api.nuget.org/v3/"
+    "SourceA": "https://api.nuget.org/v3/",
+    "SourceB": "https://api.nuget.org/v3/"
+}
+### api/comparePackages
+POST http://@{{host}}/api/comparepackages
+Content-Type: "application/json;"
+
+{
+    "SourceComparers": [
+        {
+            "sourceA": "https://api.nuget.org/v3/",
+            "sourceB": "https://api.nuget.org/v3/",
+            "Packages": [
+                {
+                    "name" : "Newtonsoft.Json"
+                },
+                {
+                    "name": "LightInject"
+                }
+            ]
+        }
+    ]
 }

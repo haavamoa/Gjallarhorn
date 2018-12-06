@@ -28,35 +28,41 @@ export class UserConfigurationService {
             .createRequest("api/comparePackage")
             .asPost()
             .withHeader("Content-Type", "application/json; charset=utf-8")
-            .withContent({ name: p.name, url: sourceComparer.sourceA, compareUrl: sourceComparer.sourceB })
+            .withContent({ name: p.name, sourceA: sourceComparer.sourceA, sourceB: sourceComparer.sourceB })
             .send()
             .then((response: any) => {
                 JSON.parse(response.response, (key, value) => {
                     if (key === "name") {
                         p.name = value;
                     }
-                    if (key === "url") {
+                    if (key === "sourceA") {
                         p.sourceAUrl = value;
                     }
-                    if (key === "version") {
+                    if (key === "sourceAVersion") {
                         p.sourceAVersion = value;
                     }
-                    if (key === "compareUrl") {
+                    if (key === "sourceB") {
                         p.sourceBUrl = value;
                     }
-                    if (key === "compareVersion") {
+                    if (key === "sourceBVersion") {
                         p.sourceBVersion = value;
                     }
                 });
                 p.fetchDate = new Date(Date.now());
                 p.isFetching = false;
+                p.isLatest = p.sourceAVersion === p.sourceBVersion;
+                p.compareFailedString = "";
                 this.searchReplaceAndSave(sourceComparer, p);
                 let updatedPackages: Package[] = this.getPackagesForComparer(sourceComparer);
                 this.EventAggregator.publish("PackageComparedEvent", updatedPackages);
             })
             .catch((reason: any) => {
                 if (reason !== undefined) {
-                    p.compareFailedString = reason;
+                    JSON.parse(reason.response, (key, value)=> {
+                        if(key === "Message") {
+                            p.compareFailedString = value;
+                        }
+                    });
                     p.isFetching = false;
                     this.searchReplaceAndSave(sourceComparer, p);
                     this.EventAggregator.publish("PackageComparedEvent", this.getPackages());
@@ -104,8 +110,8 @@ export class UserConfigurationService {
     }
 
     public sortPackagesOnLatest(packagesToSort: Package[]): Package[] {
-        let isNotLatestPackages: Package[] = packagesToSort.filter(p => p.sourceAVersion !== p.sourceBVersion);
-        var latestPackages: Package[] = packagesToSort.filter(p => p.sourceAVersion === p.sourceBVersion);
+        let isNotLatestPackages: Package[] = packagesToSort.filter(p => !p.isLatest);
+        var latestPackages: Package[] = packagesToSort.filter(p => p.isLatest);
         return isNotLatestPackages.concat(latestPackages);
     }
 

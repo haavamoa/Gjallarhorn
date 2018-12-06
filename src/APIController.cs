@@ -10,6 +10,7 @@ using NuGet.Protocol;
 using NuGet.Protocol.Core.Types;
 using NuGet.Common;
 using Microsoft.Extensions.Logging;
+using Client.Models;
 
 namespace Client
 {
@@ -36,8 +37,8 @@ namespace Client
             try
             {
                 var package = JsonConvert.DeserializeObject<Package>(body);
-                package.Version = await m_nugetService.GetLatestVersionAsync(package.Name, package.Url);
-                package.CompareVersion = await m_nugetService.GetLatestVersionAsync(package.Name, package.CompareUrl);
+                package.SourceAVersion = await m_nugetService.GetLatestVersionAsync(package.Name, package.SourceA);
+                package.SourceBVersion = await m_nugetService.GetLatestVersionAsync(package.Name, package.SourceB);
 
                 return Ok(package);
 
@@ -47,16 +48,44 @@ namespace Client
                 return NotFound(e);
             }
         }
-    }
 
-    public class Package
-    {
-        public string Name { get; set; }
-        public string Url { get; set; }
-        public string Version { get; set; }
-        public string CompareUrl { get; set; }
-        public string CompareVersion { get; set; }
-    }
+        public async Task<IActionResult> ComparePackages([FromBody] string body)
+        {
+            var requestData = body;
+            try
+            {
+                CompareRequest compareRequest = JsonConvert.DeserializeObject<CompareRequest>(body);
+                foreach (var sourceComparer in compareRequest.SourceComparers)
+                {
+                    foreach (var package in sourceComparer.Packages)
+                    {
+                        package.SourceA = sourceComparer.SourceA;
+                        package.SourceB = sourceComparer.SourceB;
+                        package.SourceAVersion = await m_nugetService.GetLatestVersionAsync(package.Name, package.SourceA);
+                        package.SourceBVersion = await m_nugetService.GetLatestVersionAsync(package.Name, package.SourceB);
+                    }
+                }
 
-    
+                var packages = MergePackages(compareRequest.SourceComparers);
+                var orderedpackages = packages.OrderBy(p => p.SourceAVersion != p.SourceBVersion);
+                return Ok(orderedpackages);
+            }
+            catch (Exception e)
+            {
+                return NotFound(e);
+            }
+        }
+        private List<Package> MergePackages(List<SourceComparer> sourceComparers)
+        {
+            var packages = new List<Package>();
+            foreach (var sourceComparer in sourceComparers)
+            {
+                foreach (var package in sourceComparer.Packages)
+                {
+                    packages.Add(package);
+                }
+            }
+            return packages;
+        }
+    }
 }

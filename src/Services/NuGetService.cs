@@ -3,6 +3,7 @@ using Microsoft.Extensions.Logging;
 using NuGet.Common;
 using NuGet.Protocol;
 using NuGet.Protocol.Core.Types;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading;
@@ -18,6 +19,9 @@ public class NuGetService : INuGetService
     }
     public async Task<string> GetLatestVersionAsync(string packageName, string packageUrl)
     {
+        ArgumentGuard.StringMissing(packageName, nameof(packageName));
+        ArgumentGuard.StringMissing(packageUrl, nameof(packageUrl));
+
         var prefix = string.Empty;
         if (packageUrl.Contains("api.nuget.org/v3/"))
         {
@@ -56,6 +60,17 @@ public class NuGetService : INuGetService
             }
         }
         return "N/A";
+    }
+}
+
+public static class ArgumentGuard
+{
+    public static void StringMissing(string value, string nameOfValue)
+    {
+        if(string.IsNullOrEmpty(value))
+        {
+            throw new ArgumentException($"Missing argument : {nameOfValue}");
+        }
     }
 }
 

@@ -24,11 +24,12 @@
                       </a>
                   </div>
               </div>
-              <!-- <div if.bind="package.fetchDate != null" class="card-footer">
+              <div if.bind="package.fetchDate != null" class="card-footer">
                   <div class="row text-muted mb-1">Last checked</div>
                   <div class="font-weight-bold row">${('00' + (package.fetchDate.getHours())).slice(-2)}:${('00' + (package.fetchDate.getMinutes())).slice(-2)}:${('00' + (package.fetchDate.getSeconds())).slice(-2)}</div>
                   <div class="font-italic row">${('00' + package.fetchDate.getDate()).slice(-2)}-${('00' + (package.fetchDate.getMonth() + 1)).slice(-2)}-${package.fetchDate.getFullYear()}</div>
-              </div> -->
+              </div>
+              ${package.compareFailedString}
           </div>
       </div>
       </div>

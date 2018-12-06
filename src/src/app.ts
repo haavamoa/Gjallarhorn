@@ -53,12 +53,9 @@ export class App {
 
     private onPackageCompared(updatedPackages: Package[]): void {
         this.isAnyPackagesComparing = updatedPackages.some(p => p.isFetching);
-        updatedPackages.forEach(p => {
-                p.isLatest = p.sourceAVersion.match(p.sourceBVersion) != null;
-            });
         this.normalView.onPackagesChanged(updatedPackages);
         if(!this.isAnyPackagesComparing) {
-            this.normalView.packages = this.UserConfigurationService.sortPackagesOnLatest(this.normalView.packages);
+            this.normalView.onAllPackagesFinishedComparing();
         }
         this.goToNormalView();
     }
@@ -106,15 +103,10 @@ export class App {
     }
 
     comparePackages(comparers: SourceComparer[]): void {
-        try {
             comparers.forEach(comparer => {
                 comparer.Packages.forEach(p => {
                     this.UserConfigurationService.comparePackage(comparer, p);
                 });
             });
-        } catch (e) {
-            this.goToJsonView();
-            return;
-        }
     }
 }

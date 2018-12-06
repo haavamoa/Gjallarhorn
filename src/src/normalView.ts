@@ -1,6 +1,6 @@
-import { UserConfigurationService } from './services/userConfigurationService';
+import { UserConfigurationService } from "./services/userConfigurationService";
 import { Package } from "./models/package";
-import { autoinject } from 'aurelia-framework';
+import { autoinject } from "aurelia-framework";
 
 @autoinject
 export class NormalView {
@@ -19,6 +19,10 @@ export class NormalView {
         } else {
             this.packages = packages;
         }
+    }
+
+    public onAllPackagesFinishedComparing():void {
+        this.packages = this.UserConfigurationService.sortPackagesOnLatest(this.packages);
     }
 
     private searchAndReplace(newPackage: Package): void {
