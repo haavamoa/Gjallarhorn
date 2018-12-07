@@ -25,7 +25,7 @@ export class NormalView {
     }
 
     public onAllPackagesFinishedComparing(packages : Package[]):void {
-        this.packages = packages;
+        this.packages = this.UserConfigurationService.sortPackages(this.packages);
     }
     cleanPackages(newPackages: Package[]): void {
         this.packages.forEach(oldpackage => {
@@ -35,6 +35,13 @@ export class NormalView {
                 this.packages.splice(index);
             }
         });
+    }
+
+    sortPackages(): void {
+        this.packages = this.UserConfigurationService.getPackages();
+        if(this.packages !== undefined) {
+            this.packages = this.UserConfigurationService.sortPackages(this.packages);
+        }
     }
 
     public Equals(packageA:Package, packageB:Package): boolean {
@@ -51,6 +58,6 @@ export class NormalView {
             this.packages.push(newPackage);
         }
 
-        this.packages = this.UserConfigurationService.sortPackagesOnLatest(this.packages);
+        this.packages = this.UserConfigurationService.sortPackages(this.packages);
     }
 }

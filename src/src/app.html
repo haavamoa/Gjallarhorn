@@ -4,7 +4,7 @@
     <div class="media">
       <div class="media-body">
         <div class="row">
-          <div class="col header-text text-monospace text-primary"> Gjallarhorn</div>
+          <div class="col header-text text-monospace text-primary">Gjallarhorn</div>
         </div>
         <div class="btn-group btn-group-toggle ${isAnyPackagesComparing ? 'disabled' : ''}" data-toggle="buttons">
           <label class="btn btn-primary ${normalViewIsVisible ? 'active' : ''}">
@@ -16,6 +16,14 @@
               click.delegate="goToJsonView()">Edit
           </label>
         </div>
+        <div if.bind="normalViewIsVisible">
+          <div class="form-check">
+            <input class="form-check-input" type="checkbox" checked.bind="showLatestpackages">
+            <label class="form-check-label">
+              Show latest packages
+            </label>
+        </div>
+ 
       </div>
     </div>
   </div>

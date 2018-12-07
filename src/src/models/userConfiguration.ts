@@ -2,8 +2,10 @@ import { SourceComparer } from "./sourceComparer";
 
 export class UserConfiguration {
     SourceComparers: SourceComparer[];
-    constructor(sourceComparer:SourceComparer[]) {
+    HideLatestPackages:boolean;
+    constructor(sourceComparer:SourceComparer[],hideLatestPackages:boolean) {
         this.SourceComparers = sourceComparer;
+        this.HideLatestPackages = hideLatestPackages;
     }
 
 }
