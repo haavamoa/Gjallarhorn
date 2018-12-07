@@ -3,7 +3,7 @@ import { UserConfigurationService } from "./services/userConfigurationService";
 import { UserConfiguration } from "./models/userConfiguration";
 import { JsonView } from "./jsonView";
 import { NormalView } from "./normalView";
-import { inject, autoinject } from "aurelia-framework";
+import { inject, autoinject, observable } from "aurelia-framework";
 import { Package } from "./models/package";
 import { EventAggregator, Subscription } from "aurelia-event-aggregator";
 
@@ -19,6 +19,7 @@ export class App {
     packagesChangedSubscriber!: Subscription;
     UserConfigurationService: UserConfigurationService;
     isAnyPackagesComparing: boolean = false;
+    @observable showLatestpackages!:boolean;
 
     constructor(normalView: NormalView, jsonView: JsonView, eventaggregator: EventAggregator
         , userConfigurationService: UserConfigurationService) {
@@ -49,6 +50,10 @@ export class App {
         }
     }
 
+    showLatestpackagesChanged(newValue: any, oldValue: any): void {
+        this.UserConfigurationService.saveHideLatestpackages(!newValue);
+        this.normalView.sortPackages();
+    }
 
     private onPackageCompared(comparedPackage:Package): void {
         this.isAnyPackagesComparing = this.normalView.packages.some(p => p.isFetching);
@@ -74,7 +79,9 @@ export class App {
     activate(): void {
         let userConfiguration: UserConfiguration | null = this.UserConfigurationService.get();
         if (userConfiguration != null) {
+            this.showLatestpackages = !userConfiguration.HideLatestPackages;
             this.normalView.initialize(this.UserConfigurationService.getPackages());
+            this.showLatestpackages = !userConfiguration.HideLatestPackages;
             this.comparePackages(userConfiguration.SourceComparers);
         }
         this.goToNormalView();

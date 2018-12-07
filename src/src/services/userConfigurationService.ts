@@ -52,16 +52,15 @@ export class UserConfigurationService {
                 p.isLatest = p.sourceAVersion === p.sourceBVersion;
                 p.compareFailedString = "";
                 this.searchReplaceAndSave(sourceComparer, p);
-                // let updatedPackages: Package[] = this.getPackagesForComparer(sourceComparer);
                 this.EventAggregator.publish("PackageComparedEvent", p);
-                if(this.IsAllPackagesCompleted()) {
+                if (this.IsAllPackagesCompleted()) {
                     this.EventAggregator.publish("AllPackagesAreComparedEvent", this.getPackages());
                 }
             })
             .catch((reason: any) => {
                 if (reason !== undefined) {
-                    JSON.parse(reason.response, (key, value)=> {
-                        if(key === "Message") {
+                    JSON.parse(reason.response, (key, value) => {
+                        if (key === "Message") {
                             p.compareFailedString = value;
                         }
                     });
@@ -74,7 +73,7 @@ export class UserConfigurationService {
     }
     IsAllPackagesCompleted(): boolean {
         var isAllPackagesCompared: boolean = false;
-        var packages : Package[] = this.getPackages();
+        var packages: Package[] = this.getPackages();
         isAllPackagesCompared = packages.every(p => !p.isFetching);
         return isAllPackagesCompared;
     }
@@ -88,10 +87,16 @@ export class UserConfigurationService {
             sourceComparer.Packages.push(newPackage);
         }
 
-        sourceComparer.Packages = this.sortPackagesOnLatest(sourceComparer.Packages);
         this.savePackages(sourceComparer);
     }
 
+    public saveHideLatestpackages(newValue: boolean): void {
+        var userconfiguration: UserConfiguration | null = this.get();
+        if (userconfiguration != null) {
+            userconfiguration.HideLatestPackages = newValue;
+            this.save(userconfiguration);
+        }
+    }
     private savePackages(sourceComparer: SourceComparer): void {
         try {
             let userConfiguration: UserConfiguration | null = this.get();
@@ -117,12 +122,20 @@ export class UserConfigurationService {
         }
     }
 
-    public sortPackagesOnLatest(packagesToSort: Package[]): Package[] {
-         let isNotLatestPackages: Package[] = packagesToSort.filter(p => !p.isLatest);
-         isNotLatestPackages = isNotLatestPackages.sort((a,b) => a.name > b.name ? 1 : -1);
-         let isLatestPackages: Package[] = packagesToSort.filter(p => p.isLatest);
-         isLatestPackages = isLatestPackages.sort((a,b) => a.name > b.name ? 1 : -1);
-         return isNotLatestPackages.concat(isLatestPackages);
+    public sortPackages(packagesToSort: Package[]): Package[] {
+        let isNotLatestPackages: Package[] = packagesToSort.filter(p => !p.isLatest);
+        isNotLatestPackages = isNotLatestPackages.sort((a, b) => a.name > b.name ? 1 : -1);
+
+        var userConfiguration: UserConfiguration | null = this.get();
+        if (userConfiguration != null) {
+            if (userConfiguration.HideLatestPackages) {
+                return isNotLatestPackages;
+            }
+        }
+
+        let isLatestPackages: Package[] = packagesToSort.filter(p => p.isLatest);
+        isLatestPackages = isLatestPackages.sort((a, b) => a.name > b.name ? 1 : -1);
+        return isNotLatestPackages.concat(isLatestPackages);
     }
 
     public save(userConfiguration: UserConfiguration): void {
@@ -155,15 +168,15 @@ export class UserConfigurationService {
                 }
             }
         }
-            let packages: Package[] = new Array<Package>();
-            if (sourceComparers !== undefined) {
-                sourceComparers.forEach(comparer => {
-                    comparer.Packages.forEach(p => {
-                        packages.push(p);
-                    });
+        let packages: Package[] = new Array<Package>();
+        if (sourceComparers !== undefined) {
+            sourceComparers.forEach(comparer => {
+                comparer.Packages.forEach(p => {
+                    packages.push(p);
                 });
-            }
-        return this.sortPackagesOnLatest(packages);
+            });
+        }
+        return packages;
     }
 
     public getPackagesForComparer(sourceComparer: SourceComparer): Package[] {
@@ -171,6 +184,6 @@ export class UserConfigurationService {
         sourceComparer.Packages.forEach(p => {
             packages.push(p);
         });
-        return this.sortPackagesOnLatest(packages);
+        return packages;
     }
 }

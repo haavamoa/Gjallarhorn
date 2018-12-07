@@ -14,25 +14,38 @@ export class JsonView {
     jsonExampleString: any;
     UserConfiguration!: UserConfiguration;
     hasChanges: boolean = false;
+    jsonFilter: string[];
+    numberOfJsonIndents: number;
 
     constructor(EventAggregator: EventAggregator, userConfigurationService: UserConfigurationService) {
         this.EventAggregator = EventAggregator;
         this.UserConfigurationService = userConfigurationService;
+        this.jsonFilter = ["SourceComparers", "sourceA", "sourceB", "Packages", "name"];
+        this.numberOfJsonIndents = 4;
     }
 
     initialize(): void {
         this.jsonString = JSON.stringify(this.UserConfigurationService.get()
-            , ["SourceComparers", "sourceA", "sourceB", "Packages", "name"], 4);
+            , this.jsonFilter, this.numberOfJsonIndents);
         this.jsonExampleString = this.CreateExampleJson();
     }
 
     jsonStringChanged(newValue: any, oldValue: any): void {
         try {
-            this.UserConfiguration = JSON.parse(newValue);
+            var newUserConfiguration : UserConfiguration = JSON.parse(newValue);
+            this.saveNonJsonEditorValues(newUserConfiguration);
+            this.UserConfiguration = newUserConfiguration;
             this.errorMessage = undefined;
             this.hasChanges = true;
         } catch (e) {
             this.errorMessage = e;
+        }
+    }
+
+    private saveNonJsonEditorValues(newUserConfiguration: UserConfiguration): void {
+        var oldUserConfiguration: UserConfiguration | null = this.UserConfigurationService.get();
+        if (oldUserConfiguration != null) {
+            newUserConfiguration.HideLatestPackages = oldUserConfiguration.HideLatestPackages;
         }
     }
 
@@ -42,9 +55,9 @@ export class JsonView {
                 new Array<SourceComparer>(new SourceComparer(
                     "https://api.nuget.org/v3/"
                     , "https://api.nuget.org/v3/"
-                    , new Array<Package>(new Package("LightInject"))))
+                    , new Array<Package>(new Package("LightInject")))),false
             )
-            , undefined, 4);
+            ,  this.jsonFilter, this.numberOfJsonIndents);
     }
 
     goBack(): void {
