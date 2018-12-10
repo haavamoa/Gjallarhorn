@@ -82,13 +82,14 @@ export class App {
 
     activate(): void {
         let userConfiguration: UserConfiguration | null = this.UserConfigurationService.get();
+
         if (userConfiguration != null) {
             this.showLatestPackages = !userConfiguration.HideLatestPackages;
             this.normalView.initialize(this.UserConfigurationService.getPackages());
             this.showLatestPackages = !userConfiguration.HideLatestPackages;
             this.comparePackages(userConfiguration.SourceComparers);
+            this.goToNormalView();
         }
-        this.goToNormalView();
     }
 
     goToNormalView(): void {

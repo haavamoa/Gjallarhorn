@@ -1,19 +1,9 @@
 <template>
-    <div class="container-fluid">
-        <div class="row">
-            <div class="col-sm-6">
-                    <div class="col header-text text-monospace text-primary" style="font-size: 25px">Packages</div>
-                <textarea id="json-input" class="${errorMessage == undefined ? 'alert-info' : 'alert-danger'}" value.bind="jsonString" style="resize: none; height:600px; width: 100%" autocomplete="off"></textarea>
-                <div class="danger">
-                        <div class="text alert-danger">${errorMessage}</div>
-                    </div>
+    <div class="container">
+         <div class="danger">
+                <div class="text alert-danger">${errorMessage}</div>
             </div>
-            <div class="col-sm-6">
-                    <div class="col header-text text-monospace text-primary" style="font-size: 25px">Example</div>
-                <textarea disabled="true" id="json-input" value.bind="jsonExampleString" style="resize: none; height:600px; width:100%; background-color: transparent"
-                    autocomplete="off"></textarea>
-            </div>
-        </div>
-    </div>
+            <textarea id="json-input" class="${errorMessage == undefined ? 'alert-info' : 'alert-danger'}" value.bind="jsonString"
+                style="resize: none; height:800px; width: 100%" autocomplete="off"></textarea>
     </div>
 </template>

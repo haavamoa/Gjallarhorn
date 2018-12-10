@@ -11,7 +11,6 @@ export class JsonView {
     errorMessage: any;
     EventAggregator: EventAggregator;
     UserConfigurationService: UserConfigurationService;
-    jsonExampleString: any;
     UserConfiguration!: UserConfiguration;
     hasChanges: boolean = false;
     jsonFilter: string[];
@@ -25,9 +24,17 @@ export class JsonView {
     }
 
     initialize(): void {
-        this.jsonString = JSON.stringify(this.UserConfigurationService.get()
-            , this.jsonFilter, this.numberOfJsonIndents);
-        this.jsonExampleString = this.CreateExampleJson();
+        var userConfiguration : UserConfiguration | null = this.UserConfigurationService.get();
+        if(userConfiguration == null) {
+            userConfiguration = new UserConfiguration(
+                new Array<SourceComparer>(new SourceComparer(
+                    "https://api.nuget.org/v3/"
+                    , "https://api.nuget.org/v3/"
+                    , new Array<Package>(new Package("LightInject")))),false
+            );
+        }
+        this.jsonString = JSON.stringify(
+            userConfiguration, this.jsonFilter, this.numberOfJsonIndents);
     }
 
     jsonStringChanged(newValue: any, oldValue: any): void {
@@ -47,17 +54,6 @@ export class JsonView {
         if (oldUserConfiguration != null) {
             newUserConfiguration.HideLatestPackages = oldUserConfiguration.HideLatestPackages;
         }
-    }
-
-    CreateExampleJson(): string {
-        return JSON.stringify(
-            new UserConfiguration(
-                new Array<SourceComparer>(new SourceComparer(
-                    "https://api.nuget.org/v3/"
-                    , "https://api.nuget.org/v3/"
-                    , new Array<Package>(new Package("LightInject")))),false
-            )
-            ,  this.jsonFilter, this.numberOfJsonIndents);
     }
 
     goBack(): void {
