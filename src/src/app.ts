@@ -19,7 +19,7 @@ export class App {
     packagesChangedSubscriber!: Subscription;
     UserConfigurationService: UserConfigurationService;
     isAnyPackagesComparing: boolean = false;
-    @observable showLatestpackages!:boolean;
+    @observable showLatestPackages!:boolean;
 
     constructor(normalView: NormalView, jsonView: JsonView, eventaggregator: EventAggregator
         , userConfigurationService: UserConfigurationService) {
@@ -50,9 +50,13 @@ export class App {
         }
     }
 
-    showLatestpackagesChanged(newValue: any, oldValue: any): void {
+    showLatestPackagesChanged(newValue: any, oldValue: any): void {
         this.UserConfigurationService.saveHideLatestpackages(!newValue);
         this.normalView.sortPackages();
+    }
+
+    toggleshowLatestPackages(): void {
+        this.showLatestPackages = !this.showLatestPackages;
     }
 
     private onPackageCompared(comparedPackage:Package): void {
@@ -79,9 +83,9 @@ export class App {
     activate(): void {
         let userConfiguration: UserConfiguration | null = this.UserConfigurationService.get();
         if (userConfiguration != null) {
-            this.showLatestpackages = !userConfiguration.HideLatestPackages;
+            this.showLatestPackages = !userConfiguration.HideLatestPackages;
             this.normalView.initialize(this.UserConfigurationService.getPackages());
-            this.showLatestpackages = !userConfiguration.HideLatestPackages;
+            this.showLatestPackages = !userConfiguration.HideLatestPackages;
             this.comparePackages(userConfiguration.SourceComparers);
         }
         this.goToNormalView();

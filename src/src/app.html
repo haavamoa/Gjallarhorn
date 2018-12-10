@@ -1,5 +1,5 @@
 ﻿<template>
-  <div class="container-fluid mb-3">
+  <div class="container-fluid">
     <!-- Header-->
     <div class="media">
       <div class="media-body">
@@ -16,19 +16,18 @@
               click.delegate="goToJsonView()">Edit
           </label>
         </div>
-        <div if.bind="normalViewIsVisible">
-          <div class="form-check">
-            <input class="form-check-input" type="checkbox" checked.bind="showLatestpackages">
-            <label class="form-check-label">
-              Show latest packages
-            </label>
-        </div>
- 
       </div>
     </div>
-  </div>
-  <div class="container-fluid">
-    <compose view-model.bind="currentView"></compose>
-  </div>
-  </div>
+    <div class="m-2 row">
+      <div class="col-0 container" style="width: 8%" if.bind="normalViewIsVisible">
+        <div click.delegate="toggleshowLatestPackages()" style="cursor: pointer;font-size:18px;" class="row border-bottom ${showLatestPackages ? 'font-weight-bold border-success' : 'font-weight-light border-danger'} text-monospace text-primary">
+            <div class="col-sm-0 mr-1" show.bind="showLatestPackages">[+]</div>
+            <div class="col-sm-0 mr-1" show.bind="!showLatestPackages">[-]</div>
+          <div class="col-sm-0">Show latest</div>
+        </div>
+      </div>
+      <div class="col container" style=" height: 100%">
+        <compose view-model.bind="currentView"></compose>
+      </div>
+    </div>
 </template>
