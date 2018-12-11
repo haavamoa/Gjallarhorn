@@ -24,3 +24,43 @@ This web-client provides a simple way of monitoring the different versions of a 
 ## API
 
 This also provides a API behind the scenes, see `src/api.http` for more information
+
+## Example-JSON to use when subscribing to packages
+
+```json
+{
+    "SourceComparers": [
+        {
+            "sourceA": "https://api.nuget.org/v3/",
+            "sourceB": "https://api.nuget.org/v3/",
+            "Packages": [
+                {
+                    "name": "LightInject"
+                }
+            ]
+        }
+    ]
+}
+```
+
+
+## Options when creating JSON in edit-mode
+
+
+#### Compare prerelease
+```json
+{
+    "SourceComparers": [
+        {
+            "sourceA": "https://api.nuget.org/v3/",
+            "sourceB": "https://api.nuget.org/v3/",
+            "Packages": [
+                {
+                    "name": "LightInject",
+                    "comparePrerelease" : "true"
+                }
+            ]
+        }
+    ]
+}
+```

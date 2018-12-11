@@ -17,7 +17,7 @@ public class NuGetService : INuGetService
     {
         m_logger = logger;
     }
-    public async Task<string> GetLatestVersionAsync(string packageName, string packageUrl)
+    public async Task<string> GetLatestVersionAsync(string packageName, string packageUrl, bool comparePrerelease)
     {
         ArgumentGuard.StringMissing(packageName, nameof(packageName));
         ArgumentGuard.StringMissing(packageUrl, nameof(packageUrl));
@@ -43,7 +43,7 @@ public class NuGetService : INuGetService
 
         var allPackages = new List<IEnumerableAsync<IPackageSearchMetadata>>();
         var packagesFromSource =
-            await feed.ListAsync(packageName, true, false, false, logger, CancellationToken.None);
+            await feed.ListAsync(packageName, comparePrerelease, false, false, logger, CancellationToken.None);
         allPackages.Add(packagesFromSource);
 
         ComparePackageSearchMetadata comparer = new ComparePackageSearchMetadata();
@@ -76,7 +76,7 @@ public static class ArgumentGuard
 
 public interface INuGetService
 {
-    Task<string> GetLatestVersionAsync(string packageName, string packageUrl);
+    Task<string> GetLatestVersionAsync(string packageName, string packageUrl, bool comparePrerelease);
 }
 
 public class Logger : NuGet.Common.ILogger

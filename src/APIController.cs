@@ -37,8 +37,8 @@ namespace Client
             try
             {
                 var package = JsonConvert.DeserializeObject<Package>(body);
-                package.SourceAVersion = await m_nugetService.GetLatestVersionAsync(package.Name, package.SourceA);
-                package.SourceBVersion = await m_nugetService.GetLatestVersionAsync(package.Name, package.SourceB);
+                package.SourceAVersion = await m_nugetService.GetLatestVersionAsync(package.Name, package.SourceA, package.ComparePrerelease);
+                package.SourceBVersion = await m_nugetService.GetLatestVersionAsync(package.Name, package.SourceB, package.ComparePrerelease);
 
                 return Ok(package);
 
@@ -61,8 +61,8 @@ namespace Client
                     {
                         package.SourceA = sourceComparer.SourceA;
                         package.SourceB = sourceComparer.SourceB;
-                        package.SourceAVersion = await m_nugetService.GetLatestVersionAsync(package.Name, package.SourceA);
-                        package.SourceBVersion = await m_nugetService.GetLatestVersionAsync(package.Name, package.SourceB);
+                        package.SourceAVersion = await m_nugetService.GetLatestVersionAsync(package.Name, package.SourceA, package.ComparePrerelease);
+                        package.SourceBVersion = await m_nugetService.GetLatestVersionAsync(package.Name, package.SourceB, package.ComparePrerelease);
                     }
                 }
 
