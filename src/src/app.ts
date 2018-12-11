@@ -10,6 +10,7 @@ import { EventAggregator, Subscription } from "aurelia-event-aggregator";
 @autoinject
 export class App {
 
+    @observable showLatestPackages!:boolean;
     normalView: NormalView;
     jsonView: JsonView;
     currentView: any;
@@ -19,7 +20,8 @@ export class App {
     packagesChangedSubscriber!: Subscription;
     UserConfigurationService: UserConfigurationService;
     isAnyPackagesComparing: boolean = false;
-    @observable showLatestPackages!:boolean;
+    progressPercentage: number = 0;
+    progressPercentageWidth!:string;
 
     constructor(normalView: NormalView, jsonView: JsonView, eventaggregator: EventAggregator
         , userConfigurationService: UserConfigurationService) {
@@ -35,6 +37,7 @@ export class App {
                 });
             this.packagesChangedSubscriber = this.EventAggregator.subscribe("PackageStartedComparingEvent"
                 , (updatedPackage:Package) => {
+                    this.isAnyPackagesComparing = true;
                     this.onPackageStartedComparing(updatedPackage);
                 });
             this.packagesChangedSubscriber = this.EventAggregator.subscribe("GoToNormalViewEvent", () => {
@@ -60,9 +63,16 @@ export class App {
     }
 
     private onPackageCompared(comparedPackage:Package): void {
-        this.isAnyPackagesComparing = this.normalView.packages.some(p => p.isFetching);
         this.normalView.onPackagesChanged(comparedPackage);
         this.goToNormalView();
+        this.setProgressPercentage(this.normalView.packages);
+    }
+
+    private setProgressPercentage(allPackages:Package[]): void {
+        var packagesThatAreComparing:Package[] =  allPackages.filter(p => !p.isFetching);
+        this.progressPercentage = packagesThatAreComparing.length / allPackages.length * 100;
+        this.progressPercentage = Math.round(this.progressPercentage * Math.pow(10, 0)) / Math.pow(10, 0);
+        this.progressPercentageWidth = "width : " + this.progressPercentage + "%";
     }
 
     private onPackageStartedComparing(updatedPackage:Package): void {
@@ -74,6 +84,7 @@ export class App {
         var packages:Package[] = this.UserConfigurationService.getPackages(comparers);
         this.normalView.initialize(packages);
         this.comparePackages(comparers);
+        this.setProgressPercentage(this.normalView.packages);
     }
     onAllPackagesAreCompared(updatedPackages: Package[]): any {
         this.isAnyPackagesComparing = false;
