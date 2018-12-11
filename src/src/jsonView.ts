@@ -19,7 +19,7 @@ export class JsonView {
     constructor(EventAggregator: EventAggregator, userConfigurationService: UserConfigurationService) {
         this.EventAggregator = EventAggregator;
         this.UserConfigurationService = userConfigurationService;
-        this.jsonFilter = ["SourceComparers", "sourceA", "sourceB", "Packages", "name"];
+        this.jsonFilter = ["SourceComparers", "sourceA", "sourceB", "Packages", "name", "comparePrerelease"];
         this.numberOfJsonIndents = 4;
     }
 

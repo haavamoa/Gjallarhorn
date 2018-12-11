@@ -7,7 +7,6 @@ namespace Client.Models
         public string SourceAVersion { get; set; }
         public string SourceB { get; set; }
         public string SourceBVersion { get; set; }
+        public bool ComparePrerelease { get; set; }
     }
-
-
 }

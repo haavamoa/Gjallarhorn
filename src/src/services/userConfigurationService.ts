@@ -27,7 +27,11 @@ export class UserConfigurationService {
             .createRequest("api/comparePackage")
             .asPost()
             .withHeader("Content-Type", "application/json; charset=utf-8")
-            .withContent({ name: p.name, sourceA: sourceComparer.sourceA, sourceB: sourceComparer.sourceB })
+            .withContent({
+                name: p.name,
+                sourceA: sourceComparer.sourceA,
+                sourceB: sourceComparer.sourceB,
+                comparePrerelease: p.comparePrerelease})
             .send()
             .then((response: any) => {
                 JSON.parse(response.response, (key, value) => {

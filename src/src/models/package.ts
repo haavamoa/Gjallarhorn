@@ -8,6 +8,7 @@ export class Package {
     sourceAUrl!:string;
     sourceBUrl!:string;
     isLatest!:boolean;
+    comparePrerelease!:boolean;
 
     constructor(name:string) {
         this.name = name;
