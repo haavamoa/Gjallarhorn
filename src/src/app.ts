@@ -10,7 +10,10 @@ import { EventAggregator, Subscription } from "aurelia-event-aggregator";
 @autoinject
 export class App {
 
+    @observable hideshowlatest!:boolean;
+    @observable hideheader!:boolean;
     @observable showLatestPackages!:boolean;
+    
     normalView: NormalView;
     jsonView: JsonView;
     currentView: any;
@@ -23,13 +26,14 @@ export class App {
     progressPercentage: number = 0;
     progressPercentageWidth!:string;
 
+
     constructor(normalView: NormalView, jsonView: JsonView, eventaggregator: EventAggregator
         , userConfigurationService: UserConfigurationService) {
         this.normalView = normalView;
         this.jsonView = jsonView;
         this.EventAggregator = eventaggregator;
         this.UserConfigurationService = userConfigurationService;
-
+        
         if (this.EventAggregator !== undefined) {
             this.packagesChangedSubscriber = this.EventAggregator.subscribe("PackageComparedEvent"
                 , (comparedPackage:Package) => {
@@ -94,12 +98,30 @@ export class App {
     activate(): void {
         let userConfiguration: UserConfiguration | null = this.UserConfigurationService.get();
 
+
         if (userConfiguration != null) {
             this.showLatestPackages = !userConfiguration.HideLatestPackages;
             this.normalView.initialize(this.UserConfigurationService.getPackages());
             this.showLatestPackages = !userConfiguration.HideLatestPackages;
             this.comparePackages(userConfiguration.SourceComparers);
             this.goToNormalView();
+        }
+
+        var url = new URL(location.href);
+
+        var showlatest = url.searchParams.get("showlatest");
+        if(showlatest != null){
+            this.showLatestPackages = showlatest == "true";
+        }
+
+        var hideheader = url.searchParams.get("hideheader");
+        if(hideheader != null){
+            this.hideheader = hideheader == "true";
+        }
+
+        var hidebutton = url.searchParams.get("hideshowlatest");
+        if(hidebutton != null){
+            this.hideshowlatest = hidebutton == "true";
         }
     }
 

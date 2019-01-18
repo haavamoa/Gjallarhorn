@@ -1,7 +1,7 @@
 ﻿<template>
   <div class="container-fluid text-monospace">
     <!-- Header-->
-    <div class="media">
+    <div class="media" show.bind="!hideheader">
       <div class="media-body">
         <div class="row border" style="background-color: #3F69AA">
           <div class="m-3 col-sm-0 header-text text-light navbar-brand">
@@ -23,7 +23,7 @@
     </div>
 
     <div class="m-2 row">
-      <div class="col-0 container mt-2" style="width: 8%" if.bind="normalViewIsVisible">
+      <div class="col-0 container mt-2" style="width: 8%" if.bind="normalViewIsVisible" show.bind="!hideshowlatest">
         <div click.delegate="toggleshowLatestPackages()" style="cursor: pointer;font-size:18px;" class="row border-bottom ${showLatestPackages ? 'border-success' : 'border-danger'} text-hover text-monospace text-primary">
 
           <div class="col-sm-0 mr-1" show.bind="showLatestPackages">[-]</div>
