@@ -64,3 +64,13 @@ This also provides a API behind the scenes, see `src/api.http` for more informat
     ]
 }
 ```
+
+## Optional query strings
+
+To **opt-in** functionality that can be useful, you can provide queries with values to the URI.
+
+### `?minimized=true`
+
+Get a minimized version of the view. Shows only the compared packages.
+
+> Note: You have to go back to a non-minimzed view in order to turn off functionallity that normally is added with buttons.
