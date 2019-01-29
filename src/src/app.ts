@@ -10,10 +10,7 @@ import { EventAggregator, Subscription } from "aurelia-event-aggregator";
 @autoinject
 export class App {
 
-    @observable hideshowlatest!:boolean;
-    @observable hideheader!:boolean;
     @observable showLatestPackages!:boolean;
-    
     normalView: NormalView;
     jsonView: JsonView;
     currentView: any;
@@ -25,6 +22,7 @@ export class App {
     isAnyPackagesComparing: boolean = false;
     progressPercentage: number = 0;
     progressPercentageWidth!:string;
+    minimized: boolean = false;
 
 
     constructor(normalView: NormalView, jsonView: JsonView, eventaggregator: EventAggregator
@@ -33,7 +31,6 @@ export class App {
         this.jsonView = jsonView;
         this.EventAggregator = eventaggregator;
         this.UserConfigurationService = userConfigurationService;
-        
         if (this.EventAggregator !== undefined) {
             this.packagesChangedSubscriber = this.EventAggregator.subscribe("PackageComparedEvent"
                 , (comparedPackage:Package) => {
@@ -107,22 +104,8 @@ export class App {
             this.goToNormalView();
         }
 
-        var url = new URL(location.href);
-
-        var showlatest = url.searchParams.get("showlatest");
-        if(showlatest != null){
-            this.showLatestPackages = showlatest == "true";
-        }
-
-        var hideheader = url.searchParams.get("hideheader");
-        if(hideheader != null){
-            this.hideheader = hideheader == "true";
-        }
-
-        var hidebutton = url.searchParams.get("hideshowlatest");
-        if(hidebutton != null){
-            this.hideshowlatest = hidebutton == "true";
-        }
+        var minimized:string|null = new URL(location.href).searchParams.get("minimized");
+        this.minimized = minimized != null && minimized === "true";
     }
 
     goToNormalView(): void {
