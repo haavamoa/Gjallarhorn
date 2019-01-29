@@ -22,6 +22,8 @@ export class App {
     isAnyPackagesComparing: boolean = false;
     progressPercentage: number = 0;
     progressPercentageWidth!:string;
+    minimized: boolean = false;
+
 
     constructor(normalView: NormalView, jsonView: JsonView, eventaggregator: EventAggregator
         , userConfigurationService: UserConfigurationService) {
@@ -29,7 +31,6 @@ export class App {
         this.jsonView = jsonView;
         this.EventAggregator = eventaggregator;
         this.UserConfigurationService = userConfigurationService;
-
         if (this.EventAggregator !== undefined) {
             this.packagesChangedSubscriber = this.EventAggregator.subscribe("PackageComparedEvent"
                 , (comparedPackage:Package) => {
@@ -94,6 +95,7 @@ export class App {
     activate(): void {
         let userConfiguration: UserConfiguration | null = this.UserConfigurationService.get();
 
+
         if (userConfiguration != null) {
             this.showLatestPackages = !userConfiguration.HideLatestPackages;
             this.normalView.initialize(this.UserConfigurationService.getPackages());
@@ -101,6 +103,9 @@ export class App {
             this.comparePackages(userConfiguration.SourceComparers);
             this.goToNormalView();
         }
+
+        var minimized:string|null = new URL(location.href).searchParams.get("minimized");
+        this.minimized = minimized != null && minimized === "true";
     }
 
     goToNormalView(): void {
