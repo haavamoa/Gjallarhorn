@@ -1,0 +1,25 @@
+﻿@page "/MainPage"
+@inject MainViewModel MainViewModel
+<table>
+    <tbody>
+        @foreach (var package in MainViewModel.Packages)
+        {
+            <tr>
+                <td>@package.Name</td>
+                <td>@package.SourceAVersion</td>
+                <td>@package.SourceBVersion</td>
+            </tr>
+        }
+    </tbody>
+</table>
+
+@functions
+{
+
+    protected override async Task OnInitAsync()
+    {
+        MainViewModel.PropertyChanged += (a, e) => StateHasChanged();
+        await MainViewModel.Initialize();
+    }
+
+}
