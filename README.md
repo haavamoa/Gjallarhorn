@@ -2,6 +2,9 @@
 
 A webclient to compare versions of packages on different NuGet sources.
 
+> Note : This project is slowly transitioning into using Blazor. Hopefully a Docker container will be available as well. 
+
+
 ## The idea
 
 Instead of making packages publicly available, you might want to release packages to only a limited audience, such as your organization or workgroup.
