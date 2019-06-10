@@ -3,6 +3,8 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Net.Http;
 using System.Threading.Tasks;
+using System.Windows.Input;
+using Gjallarhorn.Blazor.Client.Resources.Commands;
 using Gjallarhorn.Blazor.Shared;
 using Microsoft.AspNetCore.Components;
 
@@ -16,9 +18,26 @@ namespace Gjallarhorn.Blazor.Client.ViewModels
         {
             m_httpClient = httpClient;
             Packages = new List<PackageViewModel>();
+            m_allPackages = Packages;
+            ToggleShowLatestCommand = new DelegateCommand(_ => ToggleShowLatest());
         }
 
         public List<PackageViewModel> Packages { get; set; }
+        private bool m_showLatest;
+        private List<PackageViewModel> m_allPackages;
+
+        public ICommand ToggleShowLatestCommand { get; }
+        public bool ShowLatest  
+        {
+            get => m_showLatest;
+            set => SetProperty(ref m_showLatest, value);
+        }
+
+        private void ToggleShowLatest()
+        {
+            ShowLatest = !ShowLatest;
+            Packages = ShowLatest ? m_allPackages.Where(p => p.IsLatest).ToList() : m_allPackages;
+        }
 
         public async Task Initialize()
         {
@@ -26,10 +45,10 @@ namespace Gjallarhorn.Blazor.Client.ViewModels
             var hardCodedPackages = new List<Package>()
             {
                 new Package(){Name = "LightInject", SourceA = "https://api.nuget.org/v3/", SourceB = "https://api.nuget.org/v3/" },
-                new Package(){Name = "dips.embeddedbrowser.client", SourceA = "https://api.nuget.org/v3/", SourceB = "https://api.nuget.org/v3/" },
+                new Package(){Name = "a.very.very.very.very.very.long", SourceA = "https://api.nuget.org/v3/", SourceB = "https://api.nuget.org/v3/" },
                 new Package(){Name = "Xamarin.Social", SourceA = "https://api.nuget.org/v3/", SourceB = "https://api.nuget.org/v3/" },
                 new Package(){Name = "Xamarin.Forms.Theme.Dark", SourceA = "https://api.nuget.org/v3/", SourceB = "https://api.nuget.org/v3/" },
-                new Package(){Name = "Newtonsoft.Json", SourceA = "https://api.nuget.org/v3/", SourceB = "https://api.nuget.org/v3/" }
+                new Package(){Name = "dips-arena-medicalcoding-client", SourceA = "http://dips-nuget/nuget/DIPS-Dev/", SourceB = "http://dips-nuget/nuget/Arena-18.1.0-Choco/" }
             };
 
             var tasks = new List<Task>();
@@ -40,6 +59,7 @@ namespace Gjallarhorn.Blazor.Client.ViewModels
                     tasks.Add(ComparePackage(packageViewModel, hardCodedPackage));
             }
             await Task.WhenAll(tasks);
+            m_allPackages = Packages;
         }
 
         private async Task ComparePackage(PackageViewModel packageViewModel, Package package)

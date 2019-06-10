@@ -3,8 +3,8 @@
 
 <div class="m-2 row">
 
-    @*<div class="col-0 container mt-2" style="width: 8%" if.bind="normalViewIsVisible" show.bind="!minimized">
-        <div click.delegate="toggleshowLatestPackages()" style="cursor: pointer;font-size:18px;" class="row border-bottom ${showLatestPackages ? 'border-success' : 'border-danger'} text-hover text-monospace text-primary">
+    <div class="col-0 container mt-2" style="width: 8%" if.bind="normalViewIsVisible" show.bind="!minimized">
+        <div onclick="@(() => MainViewModel.ToggleShowLatestCommand.Execute(null))" style="cursor: pointer;font-size:18px;" class="row border-bottom @(MainViewModel.ShowLatest ? "border-success" : "border-danger") text-hover text-monospace text-primary">
 
             @if (MainViewModel.ShowLatest)
             {
@@ -17,7 +17,7 @@
                 <div class="col-sm-0" show.bind="!showLatestPackages">Show latest</div>   
             }
         </div>
-    </div>*@
+    </div>
 
     <div class="col container" style="height: 100%">
         <div class="row">
