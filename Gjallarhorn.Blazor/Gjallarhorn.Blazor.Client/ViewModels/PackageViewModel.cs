@@ -1,14 +1,21 @@
-﻿using Gjallarhorn.Blazor.Shared;
+﻿using System;
+using Gjallarhorn.Blazor.Shared;
 
 namespace Gjallarhorn.Blazor.Client.ViewModels
 {
-    public class PackageViewModel
+    public class PackageViewModel : BaseViewModel
     {
         private Package m_package;
 
         public PackageViewModel(Package package)
         {
             m_package = package;
+        }
+
+        public void UpdatePackage(Package package)
+        {
+            m_package = package;
+            OnPropertyChanged();
         }
 
         public string Name => m_package.Name;
@@ -20,5 +27,23 @@ namespace Gjallarhorn.Blazor.Client.ViewModels
         public string SourceA => m_package.SourceA;
 
         public string SourceB => m_package.SourceB;
+
+        private bool m_isFetching;
+
+        public bool IsFetching
+        {
+            get => m_isFetching;
+            set => SetProperty(ref m_isFetching, value);
+        }
+
+        public bool IsLatest => m_package.SourceAVersion == m_package.SourceBVersion;
+
+        private DateTime m_fetchDate;
+
+        public DateTime FetchDate
+        {
+            get => m_fetchDate;
+            set => SetProperty(ref m_fetchDate, value);
+        }
     }
 }

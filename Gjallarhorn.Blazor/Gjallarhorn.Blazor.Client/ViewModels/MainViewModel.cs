@@ -1,4 +1,6 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
+using System.Linq;
 using System.Net.Http;
 using System.Threading.Tasks;
 using Gjallarhorn.Blazor.Shared;
@@ -24,15 +26,32 @@ namespace Gjallarhorn.Blazor.Client.ViewModels
             var hardCodedPackages = new List<Package>()
             {
                 new Package(){Name = "LightInject", SourceA = "https://api.nuget.org/v3/", SourceB = "https://api.nuget.org/v3/" },
+                new Package(){Name = "dips.embeddedbrowser.client", SourceA = "https://api.nuget.org/v3/", SourceB = "https://api.nuget.org/v3/" },
+                new Package(){Name = "Xamarin.Social", SourceA = "https://api.nuget.org/v3/", SourceB = "https://api.nuget.org/v3/" },
+                new Package(){Name = "Xamarin.Forms.Theme.Dark", SourceA = "https://api.nuget.org/v3/", SourceB = "https://api.nuget.org/v3/" },
                 new Package(){Name = "Newtonsoft.Json", SourceA = "https://api.nuget.org/v3/", SourceB = "https://api.nuget.org/v3/" }
             };
 
-            foreach (var package in hardCodedPackages)
+            var tasks = new List<Task>();
+            foreach (var hardCodedPackage in hardCodedPackages)
             {
-                var updatedPackage = await m_httpClient.PostJsonAsync<Package>(ApiBaseUrl+"/comparepackage/", package);
-                Packages.Add(new PackageViewModel(updatedPackage));
-                OnPropertyChanged(nameof(Packages));
+                    var packageViewModel = new PackageViewModel(hardCodedPackage);
+                    Packages.Add(packageViewModel);
+                    tasks.Add(ComparePackage(packageViewModel, hardCodedPackage));
             }
+            await Task.WhenAll(tasks);
+        }
+
+        private async Task ComparePackage(PackageViewModel packageViewModel, Package package)
+        {
+            packageViewModel.IsFetching = true;
+            OnPropertyChanged(nameof(Packages));
+
+            var updatedPackage = await m_httpClient.PostJsonAsync<Package>(ApiBaseUrl + "/comparepackage/", package);
+
+            packageViewModel.UpdatePackage(updatedPackage);
+            packageViewModel.IsFetching = false;
+            packageViewModel.FetchDate = DateTime.Now;
         }
     }
 }

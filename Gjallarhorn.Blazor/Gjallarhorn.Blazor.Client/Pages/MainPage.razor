@@ -1,17 +1,33 @@
 ﻿@page "/MainPage"
 @inject MainViewModel MainViewModel
-<table>
-    <tbody>
-        @foreach (var package in MainViewModel.Packages)
-        {
-            <tr>
-                <td>@package.Name</td>
-                <td>@package.SourceAVersion</td>
-                <td>@package.SourceBVersion</td>
-            </tr>
-        }
-    </tbody>
-</table>
+
+<div class="m-2 row">
+
+    @*<div class="col-0 container mt-2" style="width: 8%" if.bind="normalViewIsVisible" show.bind="!minimized">
+        <div click.delegate="toggleshowLatestPackages()" style="cursor: pointer;font-size:18px;" class="row border-bottom ${showLatestPackages ? 'border-success' : 'border-danger'} text-hover text-monospace text-primary">
+
+            @if (MainViewModel.ShowLatest)
+            {
+                <div class="col-sm-0 mr-1" show.bind="showLatestPackages">[-]</div>
+                <div class="col-sm-0" show.bind="showLatestPackages">Hide latest</div>
+            }
+            else
+            {
+                <div class="col-sm-0 mr-1" show.bind="!showLatestPackages">[+]</div>
+                <div class="col-sm-0" show.bind="!showLatestPackages">Show latest</div>   
+            }
+        </div>
+    </div>*@
+
+    <div class="col container" style="height: 100%">
+        <div class="row">
+            @foreach (var package in MainViewModel.Packages)
+            {
+                <Package PackageViewModel="@package"/>
+            }
+        </div>
+    </div>
+</div>
 
 @functions
 {
