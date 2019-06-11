@@ -18,7 +18,7 @@
         </div>
     </div>
     <div class="row">
-        <button class="btn btn-success" type="button" onclick="@(() => SettingsViewModel.NewPackageCommand.Execute(null))" id="comparePreRelease">Save</button>
+        <button class="btn btn-success" type="button" onclick="@(() => SettingsViewModel.AddNewPackageCommand.Execute(null))" id="comparePreRelease">Add</button>
     </div>
 </div>
 <table class="table">
@@ -30,6 +30,7 @@
             <td >@package.SourceA</td>
             <td>@package.SourceB</td>
             <td>@package.ComparePreRelease.ToString()</td>
+            <button class="btn btn-danger" type="button" onclick="@(() => package.RemovePackageCommand.Execute(null))">Remove</button>
         </tr>
     }
     </tbody>

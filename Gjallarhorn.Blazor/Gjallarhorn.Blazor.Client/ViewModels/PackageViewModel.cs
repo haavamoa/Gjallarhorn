@@ -1,4 +1,6 @@
 ﻿using System;
+using System.Windows.Input;
+using Gjallarhorn.Blazor.Client.Resources.Commands;
 using Gjallarhorn.Blazor.Shared;
 
 namespace Gjallarhorn.Blazor.Client.ViewModels
@@ -10,6 +12,12 @@ namespace Gjallarhorn.Blazor.Client.ViewModels
         public PackageViewModel(Package package)
         {
             m_package = package;
+            RemovePackageCommand = new DelegateCommand(async _ =>  await m_packagesHandler?.RemovePackage(this));
+        }
+
+        public void Initialize(IHandlePackages packagesHandler)
+        {
+            m_packagesHandler = packagesHandler;
         }
 
         public void UpdatePackage(Package package)
@@ -17,6 +25,8 @@ namespace Gjallarhorn.Blazor.Client.ViewModels
             m_package = package;
             OnPropertyChanged();
         }
+
+        public ICommand RemovePackageCommand { get; }
 
         public string Name => m_package.Name;
 
@@ -47,6 +57,7 @@ namespace Gjallarhorn.Blazor.Client.ViewModels
         }
 
         private bool m_comparePreRelease;
+        private IHandlePackages? m_packagesHandler;
 
         public bool ComparePreRelease
         {

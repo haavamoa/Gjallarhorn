@@ -9,7 +9,7 @@ using Gjallarhorn.Blazor.Shared;
 
 namespace Gjallarhorn.Blazor.Client.ViewModels
 {
-    public class SettingsViewModel
+    public class SettingsViewModel : IHandlePackages
     {
         private readonly LocalStorage m_localStorage;
         private readonly IPackageFactory m_packageFactory;
@@ -19,27 +19,43 @@ namespace Gjallarhorn.Blazor.Client.ViewModels
             m_localStorage = localStorage;
             m_packageFactory = packageFactory;
             Packages = new List<PackageViewModel>();
-            NewPackageCommand = new DelegateCommand(async _ => await SaveNewPackage());
+            AddNewPackageCommand = new DelegateCommand(async _ => await SaveNewPackage());
         }
 
         public List<PackageViewModel> Packages { get; set; }
         public string NewPackageName { get; set; }
         public string NewPackageSourceA { get; set; }
         public string NewPackageSourceB { get; set; }
+        public bool NewPackageComparePreRelease { get; set; }
 
         public async Task Initialize()
         {
             var userConfiguration = await m_localStorage.GetItem<UserConfiguration>(StorageConstants.Key);
             Packages = m_packageFactory.CreateViewModels(userConfiguration.Packages);
+            Packages.ForEach(p => p.Initialize(this));
         }
 
-        public ICommand NewPackageCommand { get; }
-        public bool NewPackageComparePreRelease { get; set; }
+        public ICommand AddNewPackageCommand { get; }
 
         public async Task SaveNewPackage()
         {
-            Packages.Add(new PackageViewModel(new Package(){Name = NewPackageName, SourceA = NewPackageSourceA, SourceB = NewPackageSourceB, ComparePreRelease = NewPackageComparePreRelease}));
+            var viewmodel = new PackageViewModel(
+                new Package()
+                {
+                    Name = NewPackageName,
+                    SourceA = NewPackageSourceA,
+                    SourceB = NewPackageSourceB,
+                    ComparePreRelease = NewPackageComparePreRelease
+                });
+            Packages.Add(viewmodel);
             await m_localStorage.SetItem(StorageConstants.Key, new UserConfiguration(){Packages = m_packageFactory.Create(Packages)});
+            viewmodel.Initialize(this);
+        }
+
+        public async Task RemovePackage(PackageViewModel packageViewModel)
+        {
+            Packages.Remove(packageViewModel);
+            await m_localStorage.SetItem(StorageConstants.Key, new UserConfiguration() { Packages = m_packageFactory.Create(Packages) });
         }
     }
 }
