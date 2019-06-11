@@ -45,5 +45,13 @@ namespace Gjallarhorn.Blazor.Client.ViewModels
             get => m_fetchDate;
             set => SetProperty(ref m_fetchDate, value);
         }
+
+        private bool m_comparePreRelease;
+
+        public bool ComparePreRelease
+        {
+            get => m_comparePreRelease;
+            set => SetProperty(ref m_comparePreRelease, value);
+        }
     }
 }

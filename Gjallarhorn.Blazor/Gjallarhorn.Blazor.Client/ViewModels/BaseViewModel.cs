@@ -7,6 +7,16 @@ namespace Gjallarhorn.Blazor.Client.ViewModels
 {
     public class BaseViewModel : INotifyPropertyChanged
     {
+        private bool m_isBusy;
+
+        /// <summary>
+        /// Indicates that the view model is/is not busy
+        /// </summary>
+        public bool IsBusy
+        {
+            get => m_isBusy;
+            set => SetProperty(ref m_isBusy, value);
+        }
         /// <summary>
         /// Sets the property.
         /// </summary>

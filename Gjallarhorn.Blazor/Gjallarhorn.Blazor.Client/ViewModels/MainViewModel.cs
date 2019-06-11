@@ -4,7 +4,10 @@ using System.Linq;
 using System.Net.Http;
 using System.Threading.Tasks;
 using System.Windows.Input;
+using Blazor.Extensions.Storage;
+using Gjallarhorn.Blazor.Client.Helpers;
 using Gjallarhorn.Blazor.Client.Resources.Commands;
+using Gjallarhorn.Blazor.Client.Storage;
 using Gjallarhorn.Blazor.Shared;
 using Microsoft.AspNetCore.Components;
 
@@ -13,10 +16,14 @@ namespace Gjallarhorn.Blazor.Client.ViewModels
     public class MainViewModel : BaseViewModel
     {
         private readonly HttpClient m_httpClient;
+        private readonly LocalStorage m_localStorage;
+        private readonly IPackageFactory m_packageFactory;
         private const string ApiBaseUrl = "api/comparepackage";
-        public MainViewModel(HttpClient httpClient)
+        public MainViewModel(HttpClient httpClient, LocalStorage localStorage, IPackageFactory packageFactory)
         {
             m_httpClient = httpClient;
+            m_localStorage = localStorage;
+            m_packageFactory = packageFactory;
             Packages = new List<PackageViewModel>();
             m_allPackages = Packages;
             ToggleShowLatestCommand = new DelegateCommand(_ => ToggleShowLatest());
@@ -41,33 +48,27 @@ namespace Gjallarhorn.Blazor.Client.ViewModels
 
         public async Task Initialize()
         {
-            //TODO: Replace hardcoded packages with user configuration
-            var hardCodedPackages = new List<Package>()
-            {
-                new Package(){Name = "LightInject", SourceA = "https://api.nuget.org/v3/", SourceB = "https://api.nuget.org/v3/" },
-                new Package(){Name = "a.very.very.very.very.very.long", SourceA = "https://api.nuget.org/v3/", SourceB = "https://api.nuget.org/v3/" },
-                new Package(){Name = "Xamarin.Social", SourceA = "https://api.nuget.org/v3/", SourceB = "https://api.nuget.org/v3/" },
-                new Package(){Name = "Xamarin.Forms.Theme.Dark", SourceA = "https://api.nuget.org/v3/", SourceB = "https://api.nuget.org/v3/" },
-                new Package(){Name = "dips-arena-medicalcoding-client", SourceA = "http://dips-nuget/nuget/DIPS-Dev/", SourceB = "http://dips-nuget/nuget/Arena-18.1.0-Choco/" }
-            };
+            Packages.Clear();
+            var userConfiguration = await m_localStorage.GetItem<UserConfiguration>(StorageConstants.Key);
+            Packages.AddRange(m_packageFactory.CreateViewModels(userConfiguration.Packages));
 
-            var tasks = new List<Task>();
-            foreach (var hardCodedPackage in hardCodedPackages)
+            var comparingTasks = new List<Task>();
+            foreach (var packageViewModel in Packages)
             {
-                    var packageViewModel = new PackageViewModel(hardCodedPackage);
-                    Packages.Add(packageViewModel);
-                    tasks.Add(ComparePackage(packageViewModel, hardCodedPackage));
+                comparingTasks.Add(ComparePackage(packageViewModel));
             }
-            await Task.WhenAll(tasks);
+
+            IsBusy = true;
+            await Task.WhenAll(comparingTasks);
+            IsBusy = false;
             m_allPackages = Packages;
         }
 
-        private async Task ComparePackage(PackageViewModel packageViewModel, Package package)
+        private async Task ComparePackage(PackageViewModel packageViewModel)
         {
             packageViewModel.IsFetching = true;
             OnPropertyChanged(nameof(Packages));
-
-            var updatedPackage = await m_httpClient.PostJsonAsync<Package>(ApiBaseUrl + "/comparepackage/", package);
+            var updatedPackage = await m_httpClient.PostJsonAsync<Package>(ApiBaseUrl + "/comparepackage/", new Package(){Name = packageViewModel.Name, SourceA = packageViewModel.SourceA, SourceB = packageViewModel.SourceB, ComparePreRelease = packageViewModel.ComparePreRelease});
 
             packageViewModel.UpdatePackage(updatedPackage);
             packageViewModel.IsFetching = false;

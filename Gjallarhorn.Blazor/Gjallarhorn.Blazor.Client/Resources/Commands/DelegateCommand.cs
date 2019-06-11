@@ -5,8 +5,8 @@ namespace Gjallarhorn.Blazor.Client.Resources.Commands
 {
     public class DelegateCommand : ICommand
     {
-        private readonly Predicate<object> _canExecute;
-        private readonly Action<object> _execute;
+        private readonly Predicate<object> m_canExecute;
+        private readonly Action<object> m_execute;
 
         public event EventHandler CanExecuteChanged;
 
@@ -18,25 +18,25 @@ namespace Gjallarhorn.Blazor.Client.Resources.Commands
         public DelegateCommand(Action<object> execute,
             Predicate<object> canExecute)
         {
-            _execute = execute;
-            _canExecute = canExecute;
+            m_execute = execute;
+            m_canExecute = canExecute;
         }
 
 
 
         public bool CanExecute(object parameter)
         {
-            if (_canExecute == null)
+            if (m_canExecute == null)
             {
                 return true;
             }
 
-            return _canExecute(parameter);
+            return m_canExecute(parameter);
         }
 
         public void Execute(object parameter)
         {
-            _execute(parameter);
+            m_execute(parameter);
         }
 
         public void RaiseCanExecuteChanged()

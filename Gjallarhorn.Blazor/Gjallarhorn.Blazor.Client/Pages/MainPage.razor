@@ -1,8 +1,9 @@
-﻿@page "/MainPage"
+﻿@page "/status"
+@using Microsoft.AspNetCore.Components
 @inject MainViewModel MainViewModel
+@inject IUriHelper UriHelper
 
 <div class="m-2 row">
-
     <div class="col-0 container mt-2" style="width: 8%" if.bind="normalViewIsVisible" show.bind="!minimized">
         <div onclick="@(() => MainViewModel.ToggleShowLatestCommand.Execute(null))" style="cursor: pointer;font-size:18px;" class="row border-bottom @(MainViewModel.ShowLatest ? "border-success" : "border-danger") text-hover text-monospace text-primary">
 

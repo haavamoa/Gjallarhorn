@@ -31,8 +31,8 @@ namespace Gjallarhorn.Blazor.Server.Controllers
         {
             try
             {
-                package.SourceAVersion = await m_nugetService.GetLatestVersionAsync(package.Name, package.SourceA, package.ComparePrerelease);
-                package.SourceBVersion = await m_nugetService.GetLatestVersionAsync(package.Name, package.SourceB, package.ComparePrerelease);
+                package.SourceAVersion = await m_nugetService.GetLatestVersionAsync(package.Name, package.SourceA, package.ComparePreRelease);
+                package.SourceBVersion = await m_nugetService.GetLatestVersionAsync(package.Name, package.SourceB, package.ComparePreRelease);
 
                 return package;
 
@@ -55,8 +55,8 @@ namespace Gjallarhorn.Blazor.Server.Controllers
                     {
                         package.SourceA = sourceComparer.SourceA;
                         package.SourceB = sourceComparer.SourceB;
-                        package.SourceAVersion = await m_nugetService.GetLatestVersionAsync(package.Name, package.SourceA, package.ComparePrerelease);
-                        package.SourceBVersion = await m_nugetService.GetLatestVersionAsync(package.Name, package.SourceB, package.ComparePrerelease);
+                        package.SourceAVersion = await m_nugetService.GetLatestVersionAsync(package.Name, package.SourceA, package.ComparePreRelease);
+                        package.SourceBVersion = await m_nugetService.GetLatestVersionAsync(package.Name, package.SourceB, package.ComparePreRelease);
                     }
                 }
 
