@@ -48,8 +48,8 @@ namespace Gjallarhorn.Blazor.Server.Controllers
             var requestData = body;
             try
             {
-                CompareRequest compareRequest = JsonConvert.DeserializeObject<CompareRequest>(body);
-                foreach (var sourceComparer in compareRequest.SourceComparers)
+                UserConfiguration userConfiguration = JsonConvert.DeserializeObject<UserConfiguration>(body);
+                foreach (var sourceComparer in userConfiguration.SourceComparers)
                 {
                     foreach (var package in sourceComparer.Packages)
                     {
@@ -60,7 +60,7 @@ namespace Gjallarhorn.Blazor.Server.Controllers
                     }
                 }
 
-                var packages = MergePackages(compareRequest.SourceComparers);
+                var packages = MergePackages(userConfiguration.SourceComparers);
                 return packages.OrderBy(p => p.SourceAVersion != p.SourceBVersion);
             }
             catch (Exception e)

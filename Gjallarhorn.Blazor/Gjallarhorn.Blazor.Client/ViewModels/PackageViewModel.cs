@@ -7,11 +7,11 @@ namespace Gjallarhorn.Blazor.Client.ViewModels
 {
     public class PackageViewModel : BaseViewModel
     {
-        private Package m_package;
+        public Package Package { get; private set; }
 
         public PackageViewModel(Package package)
         {
-            m_package = package;
+            Package = package;
             RemovePackageCommand = new DelegateCommand(async _ =>  await m_packagesHandler?.RemovePackage(this));
         }
 
@@ -22,21 +22,21 @@ namespace Gjallarhorn.Blazor.Client.ViewModels
 
         public void UpdatePackage(Package package)
         {
-            m_package = package;
+            Package = package;
             OnPropertyChanged();
         }
 
         public ICommand RemovePackageCommand { get; }
 
-        public string Name => m_package.Name;
+        public string Name => Package.Name;
 
-        public string SourceAVersion => m_package.SourceAVersion;
+        public string SourceAVersion => Package.SourceAVersion;
 
-        public string SourceBVersion => m_package.SourceBVersion;
+        public string SourceBVersion => Package.SourceBVersion;
 
-        public string SourceA => m_package.SourceA;
+        public string SourceA => Package.SourceA;
 
-        public string SourceB => m_package.SourceB;
+        public string SourceB => Package.SourceB;
 
         private bool m_isFetching;
 
@@ -46,7 +46,7 @@ namespace Gjallarhorn.Blazor.Client.ViewModels
             set => SetProperty(ref m_isFetching, value);
         }
 
-        public bool IsLatest => m_package.SourceAVersion == m_package.SourceBVersion;
+        public bool IsLatest => Package.SourceAVersion == Package.SourceBVersion;
 
         private DateTime m_fetchDate;
 
