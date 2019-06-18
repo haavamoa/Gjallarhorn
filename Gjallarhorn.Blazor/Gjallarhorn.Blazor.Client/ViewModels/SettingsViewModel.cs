@@ -1,66 +1,49 @@
-﻿using System.Collections.Generic;
-using System.Threading.Tasks;
+﻿using System.Threading.Tasks;
 using System.Windows.Input;
-using Gjallarhorn.Blazor.Client.Helpers;
 using Gjallarhorn.Blazor.Client.Resources.Commands;
 using Gjallarhorn.Blazor.Client.Services;
 using Gjallarhorn.Blazor.Shared;
+using Newtonsoft.Json;
 
 namespace Gjallarhorn.Blazor.Client.ViewModels
 {
-    public class SettingsViewModel : IHandlePackages
+    public class SettingsViewModel : BaseViewModel
     {
-        private readonly IPackagesService m_packagesService;
+        private readonly IUserConfigurationService m_userConfigurationService;
+        private string m_packagesRaw;
         private UserConfiguration m_userConfiguration;
 
-        public SettingsViewModel(IPackagesService packagesService, IPackageFactory packageFactory)
+        public SettingsViewModel(IUserConfigurationService userConfigurationService)
         {
-            m_packagesService = packagesService;
-            Packages = new List<PackageViewModel>();
-            AddNewPackageCommand = new DelegateCommand(async _ => await SaveNewPackage());
+            m_userConfigurationService = userConfigurationService;
             m_userConfiguration = new UserConfiguration();
+            m_packagesRaw = string.Empty;
+            SaveSettingsCommand = new AsyncCommand(SaveSettings);
         }
 
-        public List<PackageViewModel> Packages { get; set; }
-        public string? NewPackageName { get; set; }
-        public string? NewPackageSourceA { get; set; }
-        public string? NewPackageSourceB { get; set; }
-        public bool NewPackageComparePreRelease { get; set; }
-
-        public ICommand AddNewPackageCommand { get; }
-
-        public async Task RemovePackage(PackageViewModel packageViewModel)
+        public string PackagesRaw
         {
-            Packages.Remove(packageViewModel);
+            get => m_packagesRaw;
+            set => SetProperty(ref m_packagesRaw, value);
+        }
 
-            await m_packagesService.DeletePackage(packageViewModel.Package);
+        public ICommand SaveSettingsCommand { get; }
+
+        private async Task SaveSettings(object o)
+        {
+            if (!(o is string settings)) return;
+
+            var uc = JsonConvert.DeserializeObject<UserConfiguration>(settings);
+            await m_userConfigurationService.SaveUserConfiguration(uc);
         }
 
         public async Task Initialize()
         {
-            Packages.Clear();
-            var packages = await m_packagesService.GetPackages();
-            packages.ForEach(
-                p =>
-                {
-                    var packageViewModel = new PackageViewModel(p);
-                    Packages.Add(packageViewModel);
-                    packageViewModel.Initialize(this);
-                });
-        }
-
-        public async Task SaveNewPackage()
-        {
-            var packageModel = new Package()
-            {
-                Name = NewPackageName, SourceA = NewPackageSourceA, SourceB = NewPackageSourceB, ComparePreRelease = NewPackageComparePreRelease
-            };
-            var packageViewModel = new PackageViewModel(packageModel);
-            Packages.Add(packageViewModel);
-
-            await m_packagesService.SavePackage(packageModel);
-
-            packageViewModel.Initialize(this);
+            var userConfiguration = await m_userConfigurationService.GetUserConfiguration();
+            PackagesRaw = JsonConvert.SerializeObject(
+                userConfiguration,
+                Formatting.Indented,
+                new JsonSerializerSettings() { NullValueHandling = NullValueHandling.Ignore, DefaultValueHandling = DefaultValueHandling.Ignore });
         }
     }
 }

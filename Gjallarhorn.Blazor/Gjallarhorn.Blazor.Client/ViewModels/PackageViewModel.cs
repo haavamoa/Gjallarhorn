@@ -12,21 +12,12 @@ namespace Gjallarhorn.Blazor.Client.ViewModels
         public PackageViewModel(Package package)
         {
             Package = package;
-            RemovePackageCommand = new DelegateCommand(async _ =>  await m_packagesHandler?.RemovePackage(this));
         }
-
-        public void Initialize(IHandlePackages packagesHandler)
-        {
-            m_packagesHandler = packagesHandler;
-        }
-
         public void UpdatePackage(Package package)
         {
             Package = package;
             OnPropertyChanged();
         }
-
-        public ICommand RemovePackageCommand { get; }
 
         public string Name => Package.Name;
 
@@ -57,7 +48,6 @@ namespace Gjallarhorn.Blazor.Client.ViewModels
         }
 
         private bool m_comparePreRelease;
-        private IHandlePackages? m_packagesHandler;
 
         public bool ComparePreRelease
         {

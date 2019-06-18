@@ -1,11 +1,8 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Net.Http;
 using System.Threading.Tasks;
 using System.Windows.Input;
-using Blazor.Extensions.Storage;
-using Gjallarhorn.Blazor.Client.Helpers;
 using Gjallarhorn.Blazor.Client.Resources.Commands;
 using Gjallarhorn.Blazor.Client.Services;
 using Gjallarhorn.Blazor.Shared;
@@ -14,11 +11,11 @@ namespace Gjallarhorn.Blazor.Client.ViewModels
 {
     public class MainViewModel : BaseViewModel
     {
-        private readonly IPackagesService m_packagesService;
+        private readonly IUserConfigurationService m_userConfigurationService;
 
-        public MainViewModel(IPackagesService packagesService)
+        public MainViewModel(IUserConfigurationService userConfigurationService)
         {
-            m_packagesService = packagesService;
+            m_userConfigurationService = userConfigurationService;
             Packages = new List<PackageViewModel>();
             m_allPackages = Packages;
             ToggleShowLatestCommand = new DelegateCommand(_ => ToggleShowLatest());
@@ -45,7 +42,7 @@ namespace Gjallarhorn.Blazor.Client.ViewModels
         {
             Packages.Clear();
 
-            var packages = await m_packagesService.GetPackages();
+            var packages = await m_userConfigurationService.GetPackages();
             packages.ForEach(p => Packages.Add(new PackageViewModel(p)));
 
             var comparingTasks = new List<Task>();
@@ -64,7 +61,7 @@ namespace Gjallarhorn.Blazor.Client.ViewModels
         {
             packageViewModel.IsFetching = true;
             OnPropertyChanged(nameof(Packages));
-            var updatedPackage = await m_packagesService.ComparePackage(
+            var updatedPackage = await m_userConfigurationService.ComparePackage(
                 new Package()
                 {
                     Name = packageViewModel.Name,

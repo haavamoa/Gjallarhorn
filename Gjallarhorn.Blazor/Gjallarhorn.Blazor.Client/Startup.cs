@@ -12,7 +12,7 @@ namespace Gjallarhorn.Blazor.Client
         public void ConfigureServices(IServiceCollection services)
         {
             services.AddStorage();
-            services.AddTransient<IPackagesService, PackagesService>();
+            services.AddTransient<IUserConfigurationService, UserConfigurationService>();
             services.AddSingleton<MainViewModel>();
             services.AddSingleton<SettingsViewModel>();
             services.AddTransient<IPackageFactory, PackageFactory>();

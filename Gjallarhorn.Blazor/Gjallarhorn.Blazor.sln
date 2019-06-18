@@ -3,11 +3,11 @@ Microsoft Visual Studio Solution File, Format Version 12.00
 # Visual Studio Version 16
 VisualStudioVersion = 16.0.28917.182
 MinimumVisualStudioVersion = 10.0.40219.1
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Gjallarhorn.Blazor.Server", "Gjallarhorn.Blazor.Server\Gjallarhorn.Blazor.Server.csproj", "{FB248194-7128-4194-AF28-F200B514F652}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Gjallarhorn.Blazor.Server", "Gjallarhorn.Blazor.Server\Gjallarhorn.Blazor.Server.csproj", "{FB248194-7128-4194-AF28-F200B514F652}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Gjallarhorn.Blazor.Client", "Gjallarhorn.Blazor.Client\Gjallarhorn.Blazor.Client.csproj", "{31BD39ED-4478-4ADE-A4A1-1A1BE10BAA78}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Gjallarhorn.Blazor.Client", "Gjallarhorn.Blazor.Client\Gjallarhorn.Blazor.Client.csproj", "{31BD39ED-4478-4ADE-A4A1-1A1BE10BAA78}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Gjallarhorn.Blazor.Shared", "Gjallarhorn.Blazor.Shared\Gjallarhorn.Blazor.Shared.csproj", "{F6DCE42C-A2D0-46A5-98CA-F48D2A773B2A}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Gjallarhorn.Blazor.Shared", "Gjallarhorn.Blazor.Shared\Gjallarhorn.Blazor.Shared.csproj", "{F6DCE42C-A2D0-46A5-98CA-F48D2A773B2A}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution

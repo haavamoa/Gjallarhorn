@@ -1,61 +1,30 @@
 ﻿@page "/edit"
+@using Gjallarhorn.Blazor.Client.Resources.Commands
+@using Microsoft.AspNetCore.Components
 @inject SettingsViewModel SettingsViewModel
+@inject IUriHelper UriHelper
 
-<div class="container">
-    @*<ul class="nav nav-tabs">
-        <li class="nav-item">
-            <button class="nav-link active" href="#">Active</a>
-        </li>
-        <li class="nav-item">
-            <a class="nav-link" href="#">Link</a>
-        </li>
-        <li class="nav-item">
-            <a class="nav-link" href="#">Link</a>
-        </li>
-        <li class="nav-item">
-            <a class="nav-link disabled" href="#">Disabled</a>
-        </li>
-    </ul>*@
-    <div class="row">
-        <input type="text" bind-value-oninput="@SettingsViewModel.NewPackageName" placeholder="Name"/>
-    </div>
-    <div class="row">
-        <input type="text" bind-value-oninput="@SettingsViewModel.NewPackageSourceA" placeholder="Source A"/>
-    </div>
-    <div class="row">
-        <input type="text" bind-value-oninput="@SettingsViewModel.NewPackageSourceB" placeholder="Source B"/>
-    </div>
-    <div class="row">
-        <div class="form-check">
-            <input class="form-check-input" type="checkbox" bind="@SettingsViewModel.NewPackageComparePreRelease"/>
-            <label class="form-check-label" for="comparePreRelease">Compare PreRelease?</label>
-        </div>
-    </div>
-    <div class="row">
-        <button class="btn btn-success" type="button" onclick="@(() => SettingsViewModel.AddNewPackageCommand.Execute(null))" id="comparePreRelease">Add</button>
-    </div>
-</div>
-<table class="table">
-    <tbody>
-    @foreach (var package in SettingsViewModel.Packages)
-    {
-        <tr>
-            <td>@package.Name</td>
-            <td >@package.SourceA</td>
-            <td>@package.SourceB</td>
-            <td>@package.ComparePreRelease.ToString()</td>
-            <button class="btn btn-danger" type="button" onclick="@(() => package.RemovePackageCommand.Execute(null))">Remove</button>
-        </tr>
-    }
-    </tbody>
-</table>
+<button type="button" class="btn btn-success m-1" onclick="@(async () => await SaveAndNavigate())">Save</button>
+<MonacoEditor ref="_editor" Model="@_editorModel" FullScreen="true" />
 
 @functions
 {
 
+    private EditorModel _editorModel { get; set; }
+    private MonacoEditor _editor;
+
     protected override async Task OnInitAsync()
     {
+        _editorModel = new EditorModel(new EditorOptions() { Language = "json" });
+        SettingsViewModel.PropertyChanged += (a, e) => StateHasChanged();
         await SettingsViewModel.Initialize();
+        await _editor.SetValue(SettingsViewModel.PackagesRaw);
     }
 
+    private async Task SaveAndNavigate()
+    {
+        var editorContent = await _editor.GetValue();
+        await ((AsyncCommand)SettingsViewModel.SaveSettingsCommand).ExecuteAsync(editorContent);
+        UriHelper.NavigateTo("/status");
+    }
 }
