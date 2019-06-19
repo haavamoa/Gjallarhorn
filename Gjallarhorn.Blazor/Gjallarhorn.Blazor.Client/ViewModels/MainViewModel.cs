@@ -17,6 +17,7 @@ namespace Gjallarhorn.Blazor.Client.ViewModels
         public MainViewModel(IUserConfigurationService userConfigurationService)
         {
             m_userConfigurationService = userConfigurationService;
+            m_packages = new List<PackageViewModel>();
             Packages = new List<PackageViewModel>();
             m_originalPackages = Packages;
             ToggleShowLatestCommand = new DelegateCommand(_ => ToggleShowLatest());

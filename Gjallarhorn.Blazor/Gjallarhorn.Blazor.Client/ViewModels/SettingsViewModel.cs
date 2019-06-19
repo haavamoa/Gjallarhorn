@@ -1,7 +1,6 @@
 ﻿using System.Threading.Tasks;
 using System.Windows.Input;
 using Gjallarhorn.Blazor.Client.Resources.Commands;
-using Gjallarhorn.Blazor.Client.Services;
 using Gjallarhorn.Blazor.Client.Services.UserConfiguration;
 using Gjallarhorn.Blazor.Shared;
 using Newtonsoft.Json;
@@ -11,21 +10,21 @@ namespace Gjallarhorn.Blazor.Client.ViewModels
     public class SettingsViewModel : BaseViewModel
     {
         private readonly IUserConfigurationService m_userConfigurationService;
-        private string m_packagesRaw;
+        private string m_userConfigurationRaw;
         private UserConfiguration m_userConfiguration;
 
         public SettingsViewModel(IUserConfigurationService userConfigurationService)
         {
             m_userConfigurationService = userConfigurationService;
             m_userConfiguration = new UserConfiguration();
-            m_packagesRaw = string.Empty;
+            m_userConfigurationRaw = string.Empty;
             SaveSettingsCommand = new AsyncCommand(SaveSettings);
         }
 
-        public string PackagesRaw
+        public string UserConfigurationRaw
         {
-            get => m_packagesRaw;
-            set => SetProperty(ref m_packagesRaw, value);
+            get => m_userConfigurationRaw;
+            set => SetProperty(ref m_userConfigurationRaw, value);
         }
 
         public ICommand SaveSettingsCommand { get; }
@@ -41,7 +40,7 @@ namespace Gjallarhorn.Blazor.Client.ViewModels
         public async Task Initialize()
         {
             var userConfiguration = await m_userConfigurationService.GetUserConfiguration();
-            PackagesRaw = JsonConvert.SerializeObject(
+            UserConfigurationRaw = JsonConvert.SerializeObject(
                 userConfiguration,
                 Formatting.Indented,
                 new JsonSerializerSettings() { NullValueHandling = NullValueHandling.Ignore, DefaultValueHandling = DefaultValueHandling.Ignore });
