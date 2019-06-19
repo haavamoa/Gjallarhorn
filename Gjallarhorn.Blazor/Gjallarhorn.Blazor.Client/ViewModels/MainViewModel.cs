@@ -18,13 +18,19 @@ namespace Gjallarhorn.Blazor.Client.ViewModels
         {
             m_userConfigurationService = userConfigurationService;
             Packages = new List<PackageViewModel>();
-            m_allPackages = Packages;
+            m_originalPackages = Packages;
             ToggleShowLatestCommand = new DelegateCommand(_ => ToggleShowLatest());
         }
 
-        public List<PackageViewModel> Packages { get; set; }
+        public List<PackageViewModel> Packages
+        {
+            get => m_packages;
+            set => SetProperty(ref m_packages, value);
+        }
+
         private bool m_showLatest;
-        private List<PackageViewModel> m_allPackages;
+        private List<PackageViewModel> m_originalPackages;
+        private List<PackageViewModel> m_packages;
 
         public ICommand ToggleShowLatestCommand { get; }
         public bool ShowLatest  
@@ -36,7 +42,7 @@ namespace Gjallarhorn.Blazor.Client.ViewModels
         private void ToggleShowLatest()
         {
             ShowLatest = !ShowLatest;
-            Packages = ShowLatest ? m_allPackages.Where(p => p.IsLatest).ToList() : m_allPackages;
+            Packages = ShowLatest ? m_originalPackages : m_originalPackages.Where(p => p.IsLatest).ToList();
         }
 
         public async Task Initialize()
@@ -55,7 +61,7 @@ namespace Gjallarhorn.Blazor.Client.ViewModels
             IsBusy = true;
             await Task.WhenAll(comparingTasks);
             IsBusy = false;
-            m_allPackages = Packages;
+            m_originalPackages = Packages;
         }
 
         private async Task ComparePackage(PackageViewModel packageViewModel)
@@ -68,6 +74,7 @@ namespace Gjallarhorn.Blazor.Client.ViewModels
             packageViewModel.UpdateVersions(updatedPackage.SourceAVersion, updatedPackage.SourceBVersion);
             packageViewModel.IsFetching = false;
             packageViewModel.FetchDate = DateTime.Now;
+            Packages = m_originalPackages.OrderByDescending(p => !p.IsLatest).ToList();
         }
     }
 }

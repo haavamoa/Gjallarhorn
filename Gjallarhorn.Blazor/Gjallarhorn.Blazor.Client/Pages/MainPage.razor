@@ -4,18 +4,18 @@
 @inject IUriHelper UriHelper
 
 <div class="m-2 row">
-    <div class="col-0 container mt-2" style="width: 8%" if.bind="normalViewIsVisible" show.bind="!minimized">
+    <div class="col-0 container mt-2" style="width: 8%" if.bind="normalViewIsVisible">
         <div onclick="@(() => MainViewModel.ToggleShowLatestCommand.Execute(null))" style="cursor: pointer;font-size:18px;" class="row border-bottom @(MainViewModel.ShowLatest ? "border-success" : "border-danger") text-hover text-monospace text-primary">
 
             @if (MainViewModel.ShowLatest)
             {
-                <div class="col-sm-0 mr-1" show.bind="showLatestPackages">[-]</div>
-                <div class="col-sm-0" show.bind="showLatestPackages">Hide latest</div>
+                <div class="col-sm-0 mr-1" >[-]</div>
+                <div class="col-sm-0">Hide latest</div>
             }
             else
             {
-                <div class="col-sm-0 mr-1" show.bind="!showLatestPackages">[+]</div>
-                <div class="col-sm-0" show.bind="!showLatestPackages">Show latest</div>   
+                <div class="col-sm-0 mr-1">[+]</div>
+                <div class="col-sm-0">Show latest</div>   
             }
         </div>
     </div>
