@@ -5,6 +5,7 @@ using System.Threading.Tasks;
 using System.Windows.Input;
 using Gjallarhorn.Blazor.Client.Resources.Commands;
 using Gjallarhorn.Blazor.Client.Services;
+using Gjallarhorn.Blazor.Client.Services.UserConfiguration;
 using Gjallarhorn.Blazor.Shared;
 
 namespace Gjallarhorn.Blazor.Client.ViewModels
@@ -62,15 +63,9 @@ namespace Gjallarhorn.Blazor.Client.ViewModels
             packageViewModel.IsFetching = true;
             OnPropertyChanged(nameof(Packages));
             var updatedPackage = await m_userConfigurationService.ComparePackage(
-                new Package()
-                {
-                    Name = packageViewModel.Name,
-                    SourceA = packageViewModel.SourceA,
-                    SourceB = packageViewModel.SourceB,
-                    ComparePreRelease = packageViewModel.ComparePreRelease
-                });
+                packageViewModel.Package);
 
-            packageViewModel.UpdatePackage(updatedPackage);
+            packageViewModel.UpdateVersions(updatedPackage.SourceAVersion, updatedPackage.SourceBVersion);
             packageViewModel.IsFetching = false;
             packageViewModel.FetchDate = DateTime.Now;
         }

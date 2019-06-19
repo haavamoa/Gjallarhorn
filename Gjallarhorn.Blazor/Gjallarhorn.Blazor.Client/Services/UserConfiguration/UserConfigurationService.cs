@@ -1,46 +1,46 @@
 ﻿using System.Collections.Generic;
-using System.Net.Http;
 using System.Threading.Tasks;
-using Blazor.Extensions.Storage;
+using Gjallarhorn.Blazor.Client.Services.Http;
+using Gjallarhorn.Blazor.Client.Services.LocalStorage;
 using Gjallarhorn.Blazor.Client.Storage;
 using Gjallarhorn.Blazor.Shared;
-using Microsoft.AspNetCore.Components;
-using Microsoft.JSInterop;
-using Newtonsoft.Json;
 
-namespace Gjallarhorn.Blazor.Client.Services
+namespace Gjallarhorn.Blazor.Client.Services.UserConfiguration
 {
     public class UserConfigurationService : IUserConfigurationService
     {
         private const string ApiBaseUrl = "api/comparepackage";
-        private readonly HttpClient m_httpClient;
-        private readonly LocalStorage m_localStorage;
-        private UserConfiguration m_userConfiguration;
+        private readonly ILocalStorage m_localStorage;
+        private readonly IHttpClient m_httpClient;
+        private Blazor.Shared.UserConfiguration m_userConfiguration;
 
-        public UserConfigurationService(HttpClient httpClient, LocalStorage localStorage)
+        public UserConfigurationService(IHttpClientFactory httpClientFactory, ILocalStorage localStorage)
         {
-            m_httpClient = httpClient;
+            m_userConfiguration = new Blazor.Shared.UserConfiguration();
+            m_httpClient = httpClientFactory.CreateClient();
             m_localStorage = localStorage;
         }
 
         public async Task<List<Package>> GetPackages()
-        {
+        {   
             var packages = new List<Package>();
-            m_userConfiguration = await m_localStorage.GetItem<UserConfiguration>(StorageConstants.Key);
+            m_userConfiguration = await m_localStorage.GetItem<Blazor.Shared.UserConfiguration>(StorageConstants.Key);
             m_userConfiguration.SourceComparers.ForEach(
                 s => s.Packages.ForEach(
                     p =>
                     {
                         p.SourceA = s.SourceA;
                         p.SourceB = s.SourceB;
+                        p.SourceAAlias = s.SourceAAlias;
+                        p.SourceBAlias = s.SourceBAlias;
                     }));
             m_userConfiguration.SourceComparers.ForEach(s => packages.AddRange(s.Packages));
             return packages;
         }
 
-        public async Task<UserConfiguration> GetUserConfiguration()
+        public async Task<Blazor.Shared.UserConfiguration> GetUserConfiguration()
         {
-            return await m_localStorage.GetItem<UserConfiguration>(StorageConstants.Key);
+            return await m_localStorage.GetItem<Blazor.Shared.UserConfiguration>(StorageConstants.Key);
         }
 
         public async Task<Package> ComparePackage(Package package)
@@ -61,7 +61,7 @@ namespace Gjallarhorn.Blazor.Client.Services
             await m_localStorage.SetItem(StorageConstants.Key, m_userConfiguration);
         }
 
-        public async Task SaveUserConfiguration(UserConfiguration userConfiguration)
+        public async Task SaveUserConfiguration(Blazor.Shared.UserConfiguration userConfiguration)
         {
             await m_localStorage.SetItem(StorageConstants.Key, userConfiguration);
         }

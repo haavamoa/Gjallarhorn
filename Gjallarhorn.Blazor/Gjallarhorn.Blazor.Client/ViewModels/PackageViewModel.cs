@@ -1,23 +1,22 @@
 ﻿using System;
-using System.Windows.Input;
-using Gjallarhorn.Blazor.Client.Resources.Commands;
 using Gjallarhorn.Blazor.Shared;
 
 namespace Gjallarhorn.Blazor.Client.ViewModels
 {
     public class PackageViewModel : BaseViewModel
     {
-        public Package Package { get; private set; }
+        private bool m_comparePreRelease;
+
+        private DateTime m_fetchDate;
+
+        private bool m_isFetching;
 
         public PackageViewModel(Package package)
         {
             Package = package;
         }
-        public void UpdatePackage(Package package)
-        {
-            Package = package;
-            OnPropertyChanged();
-        }
+
+        public Package Package { get; private set; }
 
         public string Name => Package.Name;
 
@@ -27,9 +26,10 @@ namespace Gjallarhorn.Blazor.Client.ViewModels
 
         public string SourceA => Package.SourceA;
 
-        public string SourceB => Package.SourceB;
+        public string SourceAAlias => Package.SourceAAlias;
 
-        private bool m_isFetching;
+        public string SourceB => Package.SourceB;
+        public string SourceBAlias => Package.SourceBAlias;
 
         public bool IsFetching
         {
@@ -39,20 +39,22 @@ namespace Gjallarhorn.Blazor.Client.ViewModels
 
         public bool IsLatest => Package.SourceAVersion == Package.SourceBVersion;
 
-        private DateTime m_fetchDate;
-
         public DateTime FetchDate
         {
             get => m_fetchDate;
             set => SetProperty(ref m_fetchDate, value);
         }
 
-        private bool m_comparePreRelease;
-
         public bool ComparePreRelease
         {
             get => m_comparePreRelease;
             set => SetProperty(ref m_comparePreRelease, value);
+        }
+
+        public void UpdateVersions(string sourceAVersion, string sourceBVersion)
+        {
+            Package.SourceAVersion = sourceAVersion;
+            Package.SourceBVersion = sourceBVersion;
         }
     }
 }

@@ -2,6 +2,7 @@
 using System.Windows.Input;
 using Gjallarhorn.Blazor.Client.Resources.Commands;
 using Gjallarhorn.Blazor.Client.Services;
+using Gjallarhorn.Blazor.Client.Services.UserConfiguration;
 using Gjallarhorn.Blazor.Shared;
 using Newtonsoft.Json;
 

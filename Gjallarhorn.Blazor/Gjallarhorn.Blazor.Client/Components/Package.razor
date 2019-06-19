@@ -21,14 +21,33 @@
             <div class="row container">
                 <div class="card-body">
                     <a class="clearfix" style="color: black">
-                        <div class="card-title text-muted mb-1">@PackageViewModel.SourceA</div>
+                        <div class="card-title text-muted mb-1">
+                            @if(!string.IsNullOrEmpty(PackageViewModel.SourceAAlias))
+                            {
+                                @PackageViewModel.SourceAAlias
+                            }
+                            else
+                            {
+                                @PackageViewModel.SourceA
+                            }
+
+                        </div>
                         <h5 class="card-subtitle">@PackageViewModel.SourceAVersion</h5>
                     </a>
                 </div>
 
                 <div class="card-body">
                     <a class="clearfix" style="color: black">
-                        <div class="card-title text-muted mb-1">@PackageViewModel.SourceB</div>
+                        <div class="card-title text-muted mb-1">
+                            @if (!string.IsNullOrEmpty(PackageViewModel.SourceBAlias))
+                            {
+                                @PackageViewModel.SourceBAlias
+                            }
+                            else
+                            {
+                                @PackageViewModel.SourceB
+                            }
+                        </div>
                         <h5 class="card-subtitle">@PackageViewModel.SourceBVersion</h5>
                     </a>
                 </div>

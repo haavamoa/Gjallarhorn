@@ -9,6 +9,8 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Gjallarhorn.Blazor.Client",
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Gjallarhorn.Blazor.Shared", "Gjallarhorn.Blazor.Shared\Gjallarhorn.Blazor.Shared.csproj", "{F6DCE42C-A2D0-46A5-98CA-F48D2A773B2A}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Gjallarhorn.Blazor.Client.Tests", "Gjallarhorn.Blazor.Client.Tests\Gjallarhorn.Blazor.Client.Tests.csproj", "{6AF7542A-2D7E-4B9B-ACAE-88BDDEF166D8}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -27,6 +29,10 @@ Global
 		{F6DCE42C-A2D0-46A5-98CA-F48D2A773B2A}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{F6DCE42C-A2D0-46A5-98CA-F48D2A773B2A}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{F6DCE42C-A2D0-46A5-98CA-F48D2A773B2A}.Release|Any CPU.Build.0 = Release|Any CPU
+		{6AF7542A-2D7E-4B9B-ACAE-88BDDEF166D8}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{6AF7542A-2D7E-4B9B-ACAE-88BDDEF166D8}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{6AF7542A-2D7E-4B9B-ACAE-88BDDEF166D8}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{6AF7542A-2D7E-4B9B-ACAE-88BDDEF166D8}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
