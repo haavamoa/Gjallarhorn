@@ -2,6 +2,7 @@
 
 A blazing website to compare versions of packages on different NuGet sources.
 
+> Currently working on shipping this with Docker
 
 ## The idea
 
@@ -15,7 +16,7 @@ This web-client provides a simple way of monitoring the different versions of a 
 
 ## How to use it
 
-`cd src/Gjallarhorn.Server && dotnet run
+`cd src/Gjallarhorn.Server && dotnet run`
 
 *Ps: Remember to port forward port : `57674`.*
 
