@@ -1,8 +1,6 @@
 # Gjallarhorn
 
-A webclient to compare versions of packages on different NuGet sources.
-
-> Note : This project is slowly transitioning into using Blazor. Hopefully a Docker container will be available as well. 
+A blazing website to compare versions of packages on different NuGet sources.
 
 
 ## The idea
@@ -12,68 +10,118 @@ This web-client provides a simple way of monitoring the different versions of a 
 
 ## Technologies
 
-- ASP.NET Core MVC
-- Aurelia
-- NodeJS
-- Yarn
-- Webpack
+- ASP.NET Core 3.0
+- Blazor
 
 ## How to use it
 
-`cd src && npm install && dotnet run`
+`cd src/Gjallarhorn.Server && dotnet run
 
-*Ps: Remember to port forward port : `16604`.*
+*Ps: Remember to port forward port : `57674`.*
 
-## API
+# Demonstration
+When first starting the web-site you will enter a blank *status*-page. What you need to do is to go to *edit*-page and start writing JSON.
 
-This also provides a API behind the scenes, see `src/api.http` for more information
+Here is a example of a potential JSON where we compare *LightInject* with two sources: ``https://api.nuget.org/v3`` and `<MyFakeFeedUrl>`.
+We also set `aliases` to the feeds, which is a display message in the *status* page.
+![BeforeFetch]
 
-## Example-JSON to use when subscribing to packages
+## Here is the JSON
 
 ```json
 {
-    "SourceComparers": [
+  "SourceComparers": [
+    {
+      "SourceA": "https://api.nuget.org/v3/",
+      "SourceAAlias": "NuGet",
+      "SourceB": "<MyFakeFeedUrl>",
+      "SourceBAlias": "My fake feed",
+      "Packages": [
         {
-            "sourceA": "https://api.nuget.org/v3/",
-            "sourceB": "https://api.nuget.org/v3/",
-            "Packages": [
-                {
-                    "name": "LightInject"
-                }
-            ]
+          "Name": "LightInject",
+          "ComparePreRelease": true
         }
-    ]
+      ]
+    }
+  ]
 }
 ```
 
+When we press *Save* we jump back to the *status*-page, and we start fetching versions from the two feeds:
+![DuringFetch]
 
+After the fetching has finished, we get a simplified view of the package status:
+![AfterFetch]
+
+
+If we want to add more packages to this two comparing sources, we do the following:
+```json
+{
+  "SourceComparers": [
+    {
+      "SourceA": "https://api.nuget.org/v3/",
+      "SourceAAlias": "NuGet",
+      "SourceB": "<MyFakeFeedUrl>",
+      "SourceBAlias": "My fake feed",
+      "Packages": [
+        {
+          "Name": "LightInject",
+          "ComparePreRelease": true
+        },
+        {
+          "Name" : "Newtonsoft.Json",
+          "ComparePreRelease": true
+        }
+      ]
+    }
+  ]
+}
+```
+
+If we want to add different comparing sources, we do the following:
+```json
+{
+  "SourceComparers": [
+    {
+      "SourceA": "https://api.nuget.org/v3/",
+      "SourceAAlias": "NuGet",
+      "SourceB": "<MyFakeFeedUrl>",
+      "SourceBAlias": "My fake feed",
+      "Packages": [
+        {
+          "Name": "LightInject",
+          "ComparePreRelease": true
+        },
+        {
+          "Name" : "Newtonsoft.Json",
+          "ComparePreRelease": true
+        }
+      ]
+    },
+    {
+      "SourceA": "https://api.nuget.org/v3/",
+      "SourceAAlias": "NuGet",
+      "SourceB": "<AnotherFakeUrl>",
+      "SourceBAlias": "My other fake feed",
+      "Packages": [
+        {
+          "Name": "LightInject",
+          "ComparePreRelease": true
+        },
+        {
+          "Name" : "Newtonsoft.Json",
+          "ComparePreRelease": true
+        }
+      ]
+    }
+
+  ]
+}
+```
 ## Options when creating JSON in edit-mode
 
+*ComparePrerelease* is optional, and is set to false if left empty.
 
-#### Compare prerelease
-```json
-{
-    "SourceComparers": [
-        {
-            "sourceA": "https://api.nuget.org/v3/",
-            "sourceB": "https://api.nuget.org/v3/",
-            "Packages": [
-                {
-                    "name": "LightInject",
-                    "comparePrerelease" : "true"
-                }
-            ]
-        }
-    ]
-}
-```
-
-## Optional query strings
-
-To **opt-in** functionality that can be useful, you can provide queries with values to the URI.
-
-### `?minimized=true`
-
-Get a minimized version of the view. Shows only the compared packages.
-
-> Note: You have to go back to a non-minimzed view in order to turn off functionallity that normally is added with buttons.
+[BeforeFetch]: doc/img/BeforeFetch.png
+[DuringFetch]: doc/img/DuringFetch.png
+[AfterFetch]: doc/img/AfterFetch.png
