@@ -1,0 +1,32 @@
+﻿@page "/edit"
+@using Gjallarhorn.Client.ViewModels
+@using Gjallarhorn.Client.Resources.Commands
+@using Microsoft.AspNetCore.Components
+@inject SettingsViewModel SettingsViewModel
+@inject IUriHelper UriHelper
+
+<button type="button" class="btn btn-success m-1" onclick="@(async () => await SaveAndNavigate())">Save</button>
+<MonacoEditor @ref="_editor" Model="_editorModel" FullScreen="true" />
+
+@code
+{
+
+private EditorModel _editorModel { get; set; } = new EditorModel(new EditorOptions() {  Language = "json" });
+private MonacoEditor _editor;
+
+
+protected override async Task OnInitAsync()
+{
+    SettingsViewModel.PropertyChanged += (a, e) => StateHasChanged();
+    StateHasChanged();
+    await SettingsViewModel.Initialize();
+    await _editor.SetValue(SettingsViewModel.UserConfigurationRaw);
+}
+
+private async Task SaveAndNavigate()
+{
+    var editorContent = await _editor.GetValue();
+    await ((AsyncCommand)SettingsViewModel.SaveSettingsCommand).ExecuteAsync(editorContent);
+    UriHelper.NavigateTo("/status");
+}
+}

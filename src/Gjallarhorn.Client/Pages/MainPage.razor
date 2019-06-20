@@ -1,0 +1,43 @@
+﻿@page "/status"
+@using Gjallarhorn.Client.ViewModels
+@using Microsoft.AspNetCore.Components
+@inject MainViewModel MainViewModel
+@inject IUriHelper UriHelper
+
+<div class="m-2 row">
+    <div class="col-0 container mt-2" style="width: 8%" if.bind="normalViewIsVisible">
+        <div onclick="@(() => MainViewModel.ToggleShowLatestCommand.Execute(null))" style="cursor: pointer;font-size:18px;" class="row border-bottom @(MainViewModel.ShowLatest ? "border-success" : "border-danger") text-hover text-monospace text-primary">
+
+            @if (MainViewModel.ShowLatest)
+            {
+                <div class="col-sm-0 mr-1" >[-]</div>
+                <div class="col-sm-0">Hide latest</div>
+            }
+            else
+            {
+                <div class="col-sm-0 mr-1">[+]</div>
+                <div class="col-sm-0">Show latest</div>   
+            }
+        </div>
+    </div>
+
+    <div class="col container" style="height: 100%">
+        <div class="row">
+            @foreach (var package in MainViewModel.Packages)
+            {
+                <Package PackageViewModel="@package"/>
+            }
+        </div>
+    </div>
+</div>
+
+@functions
+{
+
+    protected override async Task OnInitAsync()
+    {
+        MainViewModel.PropertyChanged += (a, e) => StateHasChanged();
+        await MainViewModel.Initialize();
+    }
+
+}
