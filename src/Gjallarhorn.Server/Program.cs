@@ -17,6 +17,7 @@ namespace Gjallarhorn.Server
                     .AddCommandLine(args)
                     .Build())
                 .UseStartup<Startup>()
+                .UseKestrel(options => { options.ListenAnyIP(1337); })
                 .Build();
     }
 }

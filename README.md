@@ -16,9 +16,10 @@ This web-client provides a simple way of monitoring the different versions of a 
 
 ## How to use it
 
-`cd src/Gjallarhorn.Server && dotnet run`
+- Open port `1337`
+- `cd src/Gjallarhorn.Server`
+- `dotnet run`
 
-*Ps: Remember to port forward port : `57674`.*
 
 # Demonstration
 When first starting the web-site you will enter a blank *status*-page. What you need to do is to go to *edit*-page and start writing JSON.
