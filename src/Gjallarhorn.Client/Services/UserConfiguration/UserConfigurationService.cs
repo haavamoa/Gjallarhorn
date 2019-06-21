@@ -10,8 +10,8 @@ namespace Gjallarhorn.Client.Services.UserConfiguration
     public class UserConfigurationService : IUserConfigurationService
     {
         private const string ApiBaseUrl = "api/comparepackage";
-        private readonly ILocalStorage m_localStorage;
         private readonly IHttpClient m_httpClient;
+        private readonly ILocalStorage m_localStorage;
         private Gjallarhorn.Shared.UserConfiguration m_userConfiguration;
 
         public UserConfigurationService(IHttpClientFactory httpClientFactory, ILocalStorage localStorage)
@@ -22,9 +22,9 @@ namespace Gjallarhorn.Client.Services.UserConfiguration
         }
 
         public async Task<List<Package>> GetPackages()
-        {   
+        {
             var packages = new List<Package>();
-            m_userConfiguration = await m_localStorage.GetItem<Gjallarhorn.Shared.UserConfiguration>(StorageConstants.Key);
+            m_userConfiguration = await GetUserConfiguration();
             m_userConfiguration.SourceComparers.ForEach(
                 s => s.Packages.ForEach(
                     p =>
@@ -40,7 +40,32 @@ namespace Gjallarhorn.Client.Services.UserConfiguration
 
         public async Task<Gjallarhorn.Shared.UserConfiguration> GetUserConfiguration()
         {
-            return await m_localStorage.GetItem<Gjallarhorn.Shared.UserConfiguration>(StorageConstants.Key);
+            var userConfiguration = await m_localStorage.GetItem<Gjallarhorn.Shared.UserConfiguration>(StorageConstants.Key);
+            if (userConfiguration == null)
+            {
+                return new Gjallarhorn.Shared.UserConfiguration()
+                {
+                    SourceComparers = new List<SourceComparer>()
+                    {
+                        new SourceComparer()
+                        {
+                            SourceA = "https://api.nuget.org/v3/",
+                            SourceAAlias = "NuGet",
+                            SourceB = "https://api.nuget.org/v3/",
+                            SourceBAlias = "Imaginary NuGet Source",
+                            Packages = new List<Package>()
+                            {
+                                new Package()
+                                {
+                                    Name = "LightInject" ,
+                                    ComparePreRelease = false
+                                },
+                            }
+                        }
+                    }
+                };
+            }
+            return userConfiguration;
         }
 
         public async Task<Package> ComparePackage(Package package)
