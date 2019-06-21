@@ -4,7 +4,6 @@
 # https://docs.microsoft.com/azure/devops/pipelines/apps/aspnet/build-aspnet-4
 
 trigger:
-- master
 
 pool:
   vmImage: 'windows-latest'
@@ -24,8 +23,7 @@ steps:
 - task: UseDotNet@2
   inputs:
     packageType: 'sdk'
-    version: '3.0.0'
-    includePreviewVersions: true
+    version: '3.0.100-preview6-012264'
 
 - task: VSBuild@1
   inputs:
@@ -38,3 +36,8 @@ steps:
   inputs:
     platform: '$(buildPlatform)'
     configuration: '$(buildConfiguration)'
+
+- task: Docker@2
+  inputs:
+    command: 'build'
+    Dockerfile: '**/Dockerfile'
