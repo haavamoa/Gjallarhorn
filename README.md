@@ -1,3 +1,5 @@
+[![Build Status](https://dev.azure.com/havardmoas/HaavamoaProjects/_apis/build/status/haavamoa.Gjallarhorn?branchName=master)](https://dev.azure.com/havardmoas/HaavamoaProjects/_build/latest?definitionId=6&branchName=master)
+
 # Gjallarhorn
 
 A blazing website to compare versions of packages on different NuGet sources.
