@@ -6,7 +6,6 @@
 
 A blazing website to compare versions of packages on different NuGet sources.
 
-> Currently working on shipping this with Docker
 
 ## The idea
 
@@ -20,10 +19,15 @@ This web-client provides a simple way of monitoring the different versions of a 
 
 ## How to use it
 
+### Source 
+
 - Open port `1338`
 - `cd src/Gjallarhorn.Server`
 - `dotnet run`
 
+### Docker
+
+`docker pull haavamoa/gjallarhorn`
 
 # Demonstration
 When first starting the web-site you will enter a blank *status*-page. What you need to do is to go to *edit*-page and start writing JSON.
