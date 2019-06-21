@@ -1,11 +1,11 @@
 #Depending on the operating system of the host machines(s) that will build or run the containers, the image specified in the FROM statement may need to be changed.
 #For more information, please see https://aka.ms/containercompat
 
-FROM mcr.microsoft.com/dotnet/core/aspnet:3.0.100-preview6-nanoserver-1903 AS base
+FROM mcr.microsoft.com/dotnet/core/aspnet:3.0-nanoserver-1709 AS base
 WORKDIR /app
 EXPOSE 1337
 
-FROM mcr.microsoft.com/dotnet/core/sdk:3.0.100-preview6-nanoserver-1903 AS build
+FROM mcr.microsoft.com/dotnet/core/sdk:3.0-nanoserver-1709 AS build
 WORKDIR /src
 COPY ["src/Gjallarhorn.Server/Gjallarhorn.Server.csproj", "Gjallarhorn.Server/"]
 COPY ["src/Gjallarhorn.Shared/Gjallarhorn.Shared.csproj", "Gjallarhorn.Shared/"]

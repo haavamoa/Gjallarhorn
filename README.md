@@ -16,7 +16,7 @@ This web-client provides a simple way of monitoring the different versions of a 
 
 ## How to use it
 
-- Open port `1337`
+- Open port `1338`
 - `cd src/Gjallarhorn.Server`
 - `dotnet run`
 
