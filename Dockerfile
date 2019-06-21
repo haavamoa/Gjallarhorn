@@ -1,24 +1,18 @@
-#Depending on the operating system of the host machines(s) that will build or run the containers, the image specified in the FROM statement may need to be changed.
-#For more information, please see https://aka.ms/containercompat
+# Build stage
+FROM mcr.microsoft.com/dotnet/core/sdk:3.0.100-preview6-alpine3.9 AS build-stage
 
-FROM mcr.microsoft.com/dotnet/core/aspnet:3.0.0-preview6 AS base
-WORKDIR /app
+COPY src /src
+
+WORKDIR /src/Gjallarhorn.Server
+
+RUN dotnet build -c release
+
+WORKDIR  /src/Gjallarhorn.Server/bin/release/netcoreapp3.0
+
+RUN cat Gjallarhorn.Client.blazor.config
+
+ENV ASPNETCORE_URLS=http://+:1338
+
 EXPOSE 1338
 
-FROM mcr.microsoft.com/dotnet/core/sdk:3.0.100-preview6 AS build
-WORKDIR /src
-COPY ["src/Gjallarhorn.Server/Gjallarhorn.Server.csproj", "Gjallarhorn.Server/"]
-COPY ["src/Gjallarhorn.Shared/Gjallarhorn.Shared.csproj", "Gjallarhorn.Shared/"]
-COPY ["src/Gjallarhorn.Client/Gjallarhorn.Client.csproj", "Gjallarhorn.Client/"]
-RUN dotnet restore "Gjallarhorn.Server/Gjallarhorn.Server.csproj"
-COPY . .
-WORKDIR "/src/Gjallarhorn.Server"
-RUN dotnet build "Gjallarhorn.Server.csproj" -c Release -o /app
-
-FROM build AS publish
-RUN dotnet publish "Gjallarhorn.Server.csproj" -c Release -o /app
-
-FROM base AS final
-WORKDIR /app
-COPY --from=publish /app .
-ENTRYPOINT ["dotnet", "Gjallarhorn.Server.dll"]
+ENTRYPOINT [ "dotnet", "Gjallarhorn.Server.dll" ]
