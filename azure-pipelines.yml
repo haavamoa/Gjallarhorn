@@ -17,34 +17,34 @@ variables:
   buildConfiguration: 'Release'
 
 steps:
-- task: NuGetToolInstaller@0
-
-- task: NuGetCommand@2
-  inputs:
-    restoreSolution: '$(solution)'
 
 - task: UseDotNet@2
+  displayName: "Use DotNet Core 3.0 Preview 6 SDK"
   inputs:
     packageType: 'sdk'
     version: '3.0.100-preview6-012264'
 
 - task: DotNetCoreCLI@2
+  displayName: "DotNet Restore"
   inputs:
     command: 'restore'
     projects: 'src/**/*.csproj'
     feedsToUse: 'select'
 
 - task: DotNetCoreCLI@2
+  displayName: "DotNet Build"
   inputs:
     command: 'build'
     projects: 'src/**/*.csproj'
 
 - task: DotNetCoreCLI@2
+  displayName: "DotNet Test"
   inputs:
     command: 'test'
     projects: 'src/**/*.csproj'
 
 - task: Docker@2
+  displayName: "Docker Build"
   inputs:
     command: 'build'
     Dockerfile: '**/Dockerfile'
