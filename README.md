@@ -1,4 +1,5 @@
 [![Build Status](https://dev.azure.com/havardmoas/HaavamoaProjects/_apis/build/status/haavamoa.Gjallarhorn?branchName=master)](https://dev.azure.com/havardmoas/HaavamoaProjects/_build/latest?definitionId=6&branchName=master)
+![Docker Cloud Build Status](https://img.shields.io/docker/cloud/build/haavamoa/gjallarhorn.svg)
 
 # Gjallarhorn
 
