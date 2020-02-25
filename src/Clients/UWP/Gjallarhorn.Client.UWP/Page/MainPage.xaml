@@ -1,0 +1,18 @@
+﻿<Page
+    x:Class="Gjallarhorn.Client.UWP.Page.MainPage"
+    xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+    xmlns:local="using:Gjallarhorn.Client.UWP"
+    xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+    xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+    xmlns:ViewModels="using:Gjallarhorn.Client.UWP.ViewModels"
+    mc:Ignorable="d"
+    Background="{StaticResource ThemeColor}"
+    Loaded="OnLoaded">
+    <Page.DataContext>
+        <ViewModels:StatusViewModel/>
+    </Page.DataContext>
+    <ItemsControl>
+
+    </ItemsControl>
+</Page>

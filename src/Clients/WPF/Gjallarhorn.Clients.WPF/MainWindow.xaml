@@ -1,0 +1,26 @@
+﻿<Window x:Class="Gjallarhorn.Clients.WPF.MainWindow"
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+        xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+        xmlns:local="clr-namespace:Gjallarhorn.Clients.WPF"
+        xmlns:ViewModels="clr-namespace:Gjallarhorn.Client.UWP.ViewModels;assembly=Gjallarhorn.MVVM"
+        xmlns:System="clr-namespace:System;assembly=System.Runtime"
+        mc:Ignorable="d"
+        Title="Gjallarhorn"
+        Height="450"
+        Width="800"
+        Loaded="OnLoaded">
+    <Window.Resources>
+        <ResourceDictionary>
+            <ResourceDictionary.MergedDictionaries>
+                <ResourceDictionary Source="PackageResourceDictionary.xaml" />
+            </ResourceDictionary.MergedDictionaries>
+        </ResourceDictionary>
+    </Window.Resources>
+    <Grid>
+        <local:SplashScreenUserControl x:Name="splashScreenUserControl" />
+        <local:MainUserControl x:Name="mainUserControl"/>
+    </Grid>
+    
+</Window>
