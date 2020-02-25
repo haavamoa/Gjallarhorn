@@ -3,21 +3,19 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
-using Microsoft.Extensions.Logging;
 using NuGet.Common;
-using NuGet.Configuration;
 using NuGet.Protocol;
 using NuGet.Protocol.Core.Types;
 
-namespace Gjallarhorn.Server.Services
+namespace Gjallarhorn.Client.UWP.Services
 {
     public class NuGetService : INuGetService
     {
-        private ILogger<NuGetService> m_logger;
+        private readonly ILogger m_logger;
 
-        public NuGetService(ILogger<NuGetService> logger)
+        public NuGetService()
         {
-            m_logger = logger;
+            m_logger = new Logger();
         }
 
         public async Task<string> GetLatestVersionAsync(string packageName, string packageUrl, bool comparePrerelease)
@@ -38,13 +36,11 @@ namespace Gjallarhorn.Server.Services
                 }
             }
 
-            NuGet.Common.ILogger logger = new Logger(m_logger);
-
-            var sourceRepository = new SourceRepository(new PackageSource(packageUrl), new List<INuGetResourceProvider>() { new V3FeedListResourceProvider() });
+            var sourceRepository = Repository.Factory.GetCoreV3(packageUrl + prefix);
             var feed = await sourceRepository.GetResourceAsync<ListResource>();
 
             var allPackages = new List<IEnumerableAsync<IPackageSearchMetadata>>();
-            var packagesFromSource = await feed.ListAsync(packageName, comparePrerelease, false, false, logger, CancellationToken.None);
+            var packagesFromSource = await feed.ListAsync(packageName, comparePrerelease, false, false, m_logger, CancellationToken.None);
             allPackages.Add(packagesFromSource);
 
             var comparer = new ComparePackageSearchMetadata();
@@ -54,7 +50,7 @@ namespace Gjallarhorn.Server.Services
                 while (await asyncEnumerator.MoveNextAsync())
                 {
                     var p = asyncEnumerator.Current;
-                    if (p.Identity.Id == packageName)
+                    if (p.Identity.Id.Equals(packageName, StringComparison.InvariantCultureIgnoreCase))
                     {
                         return p.Identity.Version.ToString();
                     }
@@ -83,51 +79,59 @@ namespace Gjallarhorn.Server.Services
 
     public class Logger : NuGet.Common.ILogger
     {
-        private ILogger<INuGetService> m_logger;
-
-        public Logger(ILogger<INuGetService> m_logger)
-        {
-            this.m_logger = m_logger;
-        }
-
         public void LogDebug(string data)
         {
-            m_logger.LogDebug(data);
+            
         }
 
         public void LogVerbose(string data)
         {
-            m_logger.LogTrace(data);
+            
         }
 
         public void LogInformation(string data)
         {
-            m_logger.LogInformation(data);
+            ;
         }
 
         public void LogMinimal(string data)
         {
-            m_logger.LogInformation(data);
+            
         }
 
         public void LogWarning(string data)
         {
-            m_logger.LogWarning(data);
-        }
-
-        public void LogErrorSummary(string data)
-        {
-            m_logger.LogError(data);
-        }
-
-        public void LogInformationSummary(string data)
-        {
-            m_logger.LogInformation(data);
+            
         }
 
         public void LogError(string data)
         {
-            m_logger.LogError(data);
+            
+        }
+
+        public void LogInformationSummary(string data)
+        {
+            
+        }
+
+        public void Log(LogLevel level, string data)
+        {
+            
+        }
+
+        public Task LogAsync(LogLevel level, string data)
+        {
+            return Task.CompletedTask;
+        }
+
+        public void Log(ILogMessage message)
+        {
+            
+        }
+
+        public Task LogAsync(ILogMessage message)
+        {
+            return Task.CompletedTask;
         }
     }
 }

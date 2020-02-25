@@ -1,0 +1,12 @@
+﻿<Application
+    x:Class="Gjallarhorn.Client.UWP.App"
+    xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+    xmlns:local="using:Gjallarhorn.Client.UWP">
+<Application.Resources>
+    <Brush x:Key="ThemeColorDarkest">#3E38F2</Brush>
+    <Brush x:Key="ThemeColorDarker">#0029FA</Brush>
+    <Brush x:Key="ThemeColorDark">#5C73F2</Brush>
+    <Brush x:Key="ThemeColor">#829FD9</Brush>
+    </Application.Resources>
+</Application>

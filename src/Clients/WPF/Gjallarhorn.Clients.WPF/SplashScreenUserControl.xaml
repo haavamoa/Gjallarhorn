@@ -1,0 +1,21 @@
+﻿<UserControl x:Class="Gjallarhorn.Clients.WPF.SplashScreenUserControl"
+             xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+             xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+             xmlns:local="clr-namespace:Gjallarhorn.Clients.WPF"
+             mc:Ignorable="d"
+             d:DesignHeight="450"
+             d:DesignWidth="800"
+             >
+    
+    <Grid VerticalAlignment="Center"
+          HorizontalAlignment="Center">
+        <TextBlock x:Name="titleTextBlock"
+                   Grid.Column="0"
+                   Text="Gjallarhorn"
+                   Foreground="{StaticResource ThemeColor}"
+                   FontSize="50"
+                   FontWeight="Bold" />
+    </Grid>
+</UserControl>
