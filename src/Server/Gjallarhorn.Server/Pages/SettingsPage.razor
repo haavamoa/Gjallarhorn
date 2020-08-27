@@ -1,0 +1,45 @@
+﻿@page "/edit"
+@using Gjallarhorn.Server.ViewModels
+@using Gjallarhorn.Server.Resources.Commands
+@using Microsoft.AspNetCore.Components
+@using Microsoft.AspNetCore.Mvc;
+@using BlazorMonaco
+@using BlazorMonaco.Bridge
+@inject SettingsViewModel SettingsViewModel
+@inject NavigationManager NavigationManager
+
+<button type="button" class="btn btn-success m-1" @onclick="SaveAndNavigate">Save</button>
+
+    <MonacoEditor @ref="m_editor" Id="MyMonacoEditor" ConstructionOptions="EditorConstructionOptions" />
+@code
+{
+    private MonacoEditor m_editor { get; set; }
+
+    private StandaloneEditorConstructionOptions EditorConstructionOptions(MonacoEditor editor)
+    {
+        return new StandaloneEditorConstructionOptions
+        {
+            Language = "json"
+        };
+    }
+    protected override async Task OnAfterRenderAsync(bool firstRender)
+    {
+        if (firstRender)
+        {
+
+            SettingsViewModel.PropertyChanged += (a, e) => StateHasChanged();
+            StateHasChanged();
+            await SettingsViewModel.Initialize();
+            await m_editor.SetValue(SettingsViewModel.UserConfigurationRaw);
+            var lineHeight = m_editor.GetOption(EditorOption.LineHeight);
+            var model = await m_editor.GetModel();
+            await m_editor.Layout(new Dimension() { Height = 1000, Width = 1000 });
+        }
+    }
+
+    private async Task SaveAndNavigate()
+    {
+        var val = await m_editor.GetValue();
+        await ((AsyncCommand)SettingsViewModel.SaveSettingsCommand).ExecuteAsync(val);
+        NavigationManager.NavigateTo("/status");
+    } }

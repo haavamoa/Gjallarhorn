@@ -34,7 +34,7 @@ namespace Gjallarhorn.Server
                 app.UseBlazorDebugging();
             }
 
-            app.UseClientSideBlazorFiles<Client.Startup>();
+            app.UseClientSideBlazorFiles<Client.Blazor.Program>();
 
             app.UseRouting();
 
