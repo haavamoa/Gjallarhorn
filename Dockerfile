@@ -3,11 +3,11 @@ FROM mcr.microsoft.com/dotnet/core/sdk:3.0.100-preview6-alpine3.9 AS build-stage
 
 COPY src /src
 
-WORKDIR /src/Gjallarhorn.Server
+WORKDIR /src/Server/Gjallarhorn.Server
 
 RUN dotnet build -c release
 
-WORKDIR  /src/Gjallarhorn.Server/bin/release/netcoreapp3.0
+WORKDIR  /src/Server/Gjallarhorn.Server/bin/release/netcoreapp3.0
 
 ENV ASPNETCORE_URLS=http://+:1338
 
